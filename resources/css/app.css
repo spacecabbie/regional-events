@@ -146,6 +146,18 @@
         outline-offset: 2px;
     }
 
+    .segmented.segmented-compact {
+        width: fit-content;
+        max-width: 100%;
+        padding: 0.125rem;
+    }
+
+    .segmented.segmented-compact :is(a, button) {
+        min-height: 2rem;
+        padding: 0.125rem 0.625rem;
+        font-size: 0.8125rem;
+    }
+
     .segmented :is([aria-current='page'], [aria-pressed='true']) {
         background: #1e40af;
         color: #fff;
@@ -179,6 +191,17 @@
         font-weight: 600;
         line-height: 2rem;
         color: #78350f;
+    }
+
+    .event-row {
+        max-height: 80px;
+    }
+
+    .event-row h2 {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
     }
 }
 
