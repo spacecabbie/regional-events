@@ -35,21 +35,21 @@
                     <ul class="divide-y divide-stone-200 border-y border-stone-200 bg-white">
                         @foreach ($events as $event)
                             <li class="p-4">
-                                <article>
-                                    <h2 class="text-lg font-semibold">{{ $event->name }}</h2>
-                                    <p class="mt-1">{{ $event->localStart() }}</p>
+                                <article class="flex items-center gap-3">
+                                    <div class="min-w-0 flex-1">
+                                        <h2 class="text-lg font-semibold">{{ $event->name }}</h2>
+                                        <p class="mt-1">{{ $event->localStart() }}</p>
+                                    </div>
+                                    <x-maps-link :event="$event" />
                                     @if ($event->thumbUrl())
                                         <img
                                             src="{{ $event->thumbUrl() }}"
                                             alt="Flyer for {{ $event->name }}"
-                                            class="mt-3 max-h-40 w-auto object-contain"
+                                            class="h-28 w-20 shrink-0 bg-stone-100 object-contain"
                                             loading="lazy"
                                             decoding="async"
                                         >
                                     @endif
-                                    <p class="mt-3">
-                                        <a href="{{ $event->mapsUrl() }}" class="underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900">Open in Google Maps</a>
-                                    </p>
                                 </article>
                             </li>
                         @endforeach

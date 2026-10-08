@@ -1,0 +1,13 @@
+@props(['event'])
+
+<a
+    href="{{ $event->mapsUrl() }}"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Open {{ $event->name }} in Google Maps"
+    {{ $attributes->class('inline-flex size-12 shrink-0 items-center justify-center text-stone-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900') }}
+>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-6" fill="currentColor" aria-hidden="true">
+        <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/>
+    </svg>
+</a>
