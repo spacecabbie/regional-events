@@ -4,6 +4,10 @@
 
     <x-form-errors />
 
+    <div class="mt-6">
+        <x-flyer-thumb :event="$event" image-class="max-h-40 w-auto object-contain" />
+    </div>
+
     <form action="{{ $updateUrl }}" method="POST" enctype="multipart/form-data" class="mt-6 max-w-xl space-y-6">
         @csrf
         @method('PUT')
@@ -21,14 +25,10 @@
             <p id="location-help" class="mt-1 text-sm text-stone-700">Coordinates or a new map link.</p>
         </div>
 
-        @if ($event->thumbUrl())
-            <img src="{{ $event->thumbUrl() }}" alt="Current flyer for {{ $event->name }}" class="max-h-40 w-auto object-contain">
-        @endif
-
         <div>
             <label for="flyer" class="block font-medium">Replace flyer</label>
-            <input id="flyer" name="flyer" type="file" accept="image/jpeg,image/png,image/webp" class="mt-1 block w-full min-h-12 text-base file:me-3 file:min-h-12 file:border-0 file:bg-stone-200 file:px-4" aria-describedby="flyer-help">
-            <p id="flyer-help" class="mt-1 text-sm text-stone-700">Leave this empty to keep the current flyer.</p>
+            <input id="flyer" name="flyer" type="file" accept="image/jpeg,image/png,image/gif,image/webp,image/bmp,image/tiff,application/pdf" class="mt-1 block w-full min-h-12 text-base file:me-3 file:min-h-12 file:border-0 file:bg-stone-200 file:px-4" aria-describedby="flyer-help">
+            <p id="flyer-help" class="mt-1 text-sm text-stone-700">Leave this empty to keep the current flyer. A new file is stored as WebP. JPEG, PNG, GIF, WebP, BMP, TIFF, or the first page of a PDF.</p>
         </div>
 
         <button type="submit" class="inline-flex min-h-12 items-center bg-stone-900 px-4 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900">Save changes</button>

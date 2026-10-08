@@ -21,7 +21,11 @@ use Illuminate\Support\Facades\Storage;
     'lat',
     'lng',
     'flyer_path',
+    'flyer_2x_path',
     'flyer_thumb_path',
+    'flyer_width',
+    'flyer_height',
+    'flyer_2x_width',
 ])]
 class Event extends Model
 {
@@ -37,7 +41,7 @@ class Event extends Model
         });
 
         static::deleting(function (Event $event): void {
-            app(StoreFlyer::class)->delete($event->flyer_path, $event->flyer_thumb_path);
+            app(StoreFlyer::class)->delete($event->flyer_path, $event->flyer_2x_path, $event->flyer_thumb_path);
         });
     }
 
@@ -178,6 +182,11 @@ class Event extends Model
     public function flyerUrl(): ?string
     {
         return $this->publicUrl($this->flyer_path);
+    }
+
+    public function flyer2xUrl(): ?string
+    {
+        return $this->publicUrl($this->flyer_2x_path);
     }
 
     public function thumbUrl(): ?string

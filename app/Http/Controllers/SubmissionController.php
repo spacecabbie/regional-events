@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\Event;
 use App\Events\EventRules;
+use App\Events\FlyerUnreadable;
 use App\Submissions\ConfirmEvent;
 use App\Submissions\ManageEvent;
 use App\Submissions\RequestEditLink;
@@ -31,7 +32,11 @@ class SubmissionController extends Controller
         $data = $request->validate(EventRules::submission(), [], EventRules::attributes());
         $flyer = $request->file('flyer');
 
-        $submit($data, $flyer instanceof UploadedFile ? $flyer : null);
+        try {
+            $submit($data, $flyer instanceof UploadedFile ? $flyer : null);
+        } catch (FlyerUnreadable $exception) {
+            return back()->withInput()->withErrors(['flyer' => $exception->getMessage()]);
+        }
 
         return redirect()
             ->route('events.create')
@@ -97,7 +102,12 @@ class SubmissionController extends Controller
     {
         $data = $request->validate(EventRules::edit(), [], EventRules::attributes());
         $flyer = $request->file('flyer');
-        $manage->update($event, $data, $flyer instanceof UploadedFile ? $flyer : null);
+
+        try {
+            $manage->update($event, $data, $flyer instanceof UploadedFile ? $flyer : null);
+        } catch (FlyerUnreadable $exception) {
+            return back()->withInput()->withErrors(['flyer' => $exception->getMessage()]);
+        }
 
         return redirect()
             ->to(URL::temporarySignedRoute(

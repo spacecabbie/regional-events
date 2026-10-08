@@ -13,6 +13,8 @@ class EditEvent extends EditRecord
 
     public ?string $previousFlyer = null;
 
+    public ?string $previousRetina = null;
+
     public ?string $previousThumb = null;
 
     /**
@@ -23,12 +25,13 @@ class EditEvent extends EditRecord
     {
         $data = EventResource::applyLocation($data, (string) ($this->data['location'] ?? ''));
         $data = EventSchedule::applyAdmin($data);
-        $storedThumb = $data['flyer_thumb_path'] ?? null;
         $data = EventResource::applyFlyer($data);
+        $record = $this->getRecord();
 
-        if (($data['flyer_thumb_path'] ?? null) !== $storedThumb) {
-            $this->previousFlyer = $this->getRecord()->flyer_path;
-            $this->previousThumb = $this->getRecord()->flyer_thumb_path;
+        if (($data['flyer_path'] ?? null) !== $record->flyer_path) {
+            $this->previousFlyer = $record->flyer_path;
+            $this->previousRetina = $record->flyer_2x_path;
+            $this->previousThumb = $record->flyer_thumb_path;
         }
 
         return $data;
@@ -37,7 +40,7 @@ class EditEvent extends EditRecord
     protected function afterSave(): void
     {
         if ($this->previousFlyer && $this->previousFlyer !== $this->getRecord()->flyer_path) {
-            app(StoreFlyer::class)->delete($this->previousFlyer, $this->previousThumb);
+            app(StoreFlyer::class)->delete($this->previousFlyer, $this->previousRetina, $this->previousThumb);
         }
     }
 }

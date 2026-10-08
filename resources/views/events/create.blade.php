@@ -24,8 +24,8 @@
 
         <div>
             <label for="flyer" class="block font-medium">Flyer</label>
-            <input id="flyer" name="flyer" type="file" accept="image/jpeg,image/png,image/webp" class="mt-1 block w-full min-h-12 text-base file:me-3 file:min-h-12 file:border-0 file:bg-stone-200 file:px-4" aria-describedby="flyer-help">
-            <p id="flyer-help" class="mt-1 text-sm text-stone-700">Optional. JPEG, PNG, or WebP. Scaled to fit A4. A smaller image is left as it is.</p>
+            <input id="flyer" name="flyer" type="file" accept="image/jpeg,image/png,image/gif,image/webp,image/bmp,image/tiff,application/pdf" class="mt-1 block w-full min-h-12 text-base file:me-3 file:min-h-12 file:border-0 file:bg-stone-200 file:px-4" aria-describedby="flyer-help">
+            <p id="flyer-help" class="mt-1 text-sm text-stone-700">Optional. JPEG, PNG, GIF, WebP, BMP, TIFF, or PDF. Stored as WebP and fitted inside A4. A smaller picture is left as it is. Only the first PDF page is kept.</p>
         </div>
 
         <div>
