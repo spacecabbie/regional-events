@@ -216,11 +216,124 @@
     .flyer-open:active {
         border-color: #1e3a8a;
     }
+
+    .filters {
+        position: relative;
+        width: 100%;
+    }
+
+    .filters > summary {
+        display: flex;
+        width: 100%;
+        min-height: 3rem;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        border: 1px solid #cbd5e1;
+        border-radius: 0.5rem;
+        background: #fff;
+        padding: 0.5rem 1rem;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        line-height: 1.25;
+        color: #0f172a;
+        cursor: pointer;
+        list-style: none;
+    }
+
+    .filters > summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .filters > summary::after {
+        content: "";
+        width: 0.45rem;
+        height: 0.45rem;
+        border-right: 2px solid currentColor;
+        border-bottom: 2px solid currentColor;
+        transform: translateY(-0.15rem) rotate(45deg);
+    }
+
+    .filters[open] > summary::after {
+        transform: translateY(0.15rem) rotate(225deg);
+    }
+
+    .filters > summary:focus-visible {
+        outline: 2px solid #1e40af;
+        outline-offset: 2px;
+    }
+
+    .filters-current {
+        font-weight: 500;
+        color: #1e3a8a;
+    }
+
+    .filters-panel {
+        margin-top: 0.75rem;
+        padding: 1rem;
+    }
+
+    .filters fieldset {
+        margin: 0;
+        border: 0;
+        padding: 0;
+    }
+
+    .filters legend {
+        margin-bottom: 0.25rem;
+        font-weight: 600;
+    }
+
+    .filter-choice {
+        display: flex;
+        min-height: 3rem;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .filter-choice input {
+        width: 1.25rem;
+        height: 1.25rem;
+        accent-color: #1e40af;
+    }
+
+    .filter-when,
+    .filter-month,
+    .filter-day-help,
+    .filter-week-help {
+        display: none;
+    }
+
+    .filters:has(input[name="range"][value="day"]:checked) .filter-when,
+    .filters:has(input[name="range"][value="week"]:checked) .filter-when,
+    .filters:has(input[name="range"][value="month"]:checked) .filter-month,
+    .filters:has(input[name="range"][value="day"]:checked) .filter-day-help,
+    .filters:has(input[name="range"][value="week"]:checked) .filter-week-help {
+        display: block;
+    }
 }
 
 @media (min-width: 40rem) {
     .page-title {
         font-size: 1.875rem;
+    }
+
+    .filters {
+        width: auto;
+        margin-inline-start: auto;
+    }
+
+    .filters > summary {
+        width: auto;
+    }
+
+    .filters-panel {
+        position: absolute;
+        z-index: 30;
+        inset-inline-end: 0;
+        width: 22rem;
     }
 }
 
@@ -249,6 +362,10 @@
     .flyer-open:hover {
         border-color: #1e40af;
         box-shadow: 0 0 0 2px rgb(30 64 175 / 0.28);
+    }
+
+    .filters > summary:hover {
+        background: #f8fafc;
     }
 }
 

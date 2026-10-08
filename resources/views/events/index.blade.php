@@ -1,5 +1,5 @@
-<x-public-layout :title="'Events in the next '.$days.' days'">
-    <h1 class="page-title">Events in the next {{ $days }} days</h1>
+<x-public-layout :title="$filters->heading()">
+    <h1 class="page-title">{{ $filters->heading() }}</h1>
     <p class="lede">Confirmed events around Castelo Branco. Choose a list, a map, or both.</p>
 
     <x-form-errors />
@@ -8,7 +8,7 @@
         <nav aria-label="View" class="segmented">
             @foreach (['both' => 'Both', 'list' => 'List', 'map' => 'Map'] as $value => $label)
                 <a
-                    href="{{ route('events.index', ['view' => $value, 'provider' => $provider]) }}"
+                    href="{{ route('events.index', ['view' => $value, 'provider' => $provider] + $filters->parameters()) }}"
                     @if ($view === $value) aria-current="page" @endif
                 >{{ $label }}</a>
             @endforeach
@@ -18,19 +18,21 @@
             <nav aria-label="Map provider" class="segmented">
                 @foreach (['open' => 'Open map', 'google' => 'Google Maps'] as $value => $label)
                     <a
-                        href="{{ route('events.index', ['view' => $view, 'provider' => $value]) }}"
+                        href="{{ route('events.index', ['view' => $view, 'provider' => $value] + $filters->parameters()) }}"
                         @if ($provider === $value) aria-current="page" @endif
                     >{{ $label }}</a>
                 @endforeach
             </nav>
         @endif
+
+        <x-event-filters :filters="$filters" :view="$view" :provider="$provider" />
     </div>
 
     <div class="mt-6 grid gap-6 {{ $view === 'both' ? 'lg:grid-cols-2' : '' }}">
         @if ($view !== 'map')
             <section aria-label="Event list" class="{{ $view === 'both' ? 'order-2 lg:order-1' : '' }}">
                 @if ($events->isEmpty())
-                    <p class="card p-4 text-slate-700">No events in the next {{ $days }} days.</p>
+                    <p class="card p-4 text-slate-700">{{ $filters->emptyMessage() }}</p>
                 @else
                     <ul class="grid gap-3">
                         @foreach ($events as $event)
@@ -55,7 +57,7 @@
         @if ($view !== 'list')
             <section aria-label="Event map" class="{{ $view === 'both' ? 'order-1 lg:order-2' : '' }}">
                 @if ($events->isEmpty())
-                    <p class="card mb-3 p-4 text-slate-700">No events in the next {{ $days }} days.</p>
+                    <p class="card mb-3 p-4 text-slate-700">{{ $filters->emptyMessage() }}</p>
                 @endif
                 <div class="card overflow-hidden">
                     <div
