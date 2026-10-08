@@ -72,7 +72,7 @@ class EventFilterTest extends TestCase
         $this->event('Saturday edge', '2026-10-04 21:00:00');
         $this->event('Next week market', '2026-10-12 09:00:00');
 
-        $response = $this->get('/?range=week&on=2026-10-08');
+        $response = $this->get('/?range=week&monday=2026-10-05');
 
         $response->assertSee('Events in the week of 5–11 Oct 2026');
         $response->assertSee('Monday market');
@@ -87,7 +87,7 @@ class EventFilterTest extends TestCase
         $this->event('October Sunday', '2026-10-04 18:00:00');
         $this->event('Following Monday', '2026-10-05 09:00:00');
 
-        $response = $this->get('/?range=week&on=2026-10-01');
+        $response = $this->get('/?range=week&on=2026-09-28');
 
         $response->assertSee('Events in the week of 28 Sep–4 Oct 2026');
         $response->assertSee('September Monday');
@@ -114,6 +114,22 @@ class EventFilterTest extends TestCase
         $fromAnchor->assertSee('Events in November 2026');
         $fromAnchor->assertSee('After the window');
         $fromAnchor->assertDontSee('Inside October');
+    }
+
+    public function test_a_week_choice_must_be_a_monday(): void
+    {
+        $this->event('Inside the window', '2026-10-20 10:00:00');
+
+        $response = $this->get('/');
+
+        $response->assertSee('name="monday"', false);
+        $response->assertSee('Mon 5 Oct 2026');
+        $response->assertDontSee('Mon 8 Oct 2026');
+
+        $rejected = $this->get('/?range=week&on=2026-10-08');
+
+        $rejected->assertSee('Events in the next 30 days');
+        $rejected->assertSee('Inside the window');
     }
 
     public function test_a_bad_period_falls_back_to_the_window(): void

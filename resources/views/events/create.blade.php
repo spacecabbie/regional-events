@@ -4,7 +4,7 @@
 
     <x-form-errors />
 
-    <form action="{{ route('events.store') }}" method="POST" enctype="multipart/form-data" class="card mt-6 max-w-xl space-y-6 p-4 sm:p-6">
+    <form action="{{ route('events.store') }}" method="POST" enctype="multipart/form-data" class="card mt-4 max-w-xl space-y-4 p-3 sm:p-4">
         @csrf
         <x-honeypot />
 

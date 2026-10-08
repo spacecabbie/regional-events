@@ -83,7 +83,7 @@ class UpcomingEventsTest extends TestCase
         $response->assertSee('data-single-zoom="13"', false);
         $response->assertSee('World_Transportation', false);
         $response->assertSee('World_Boundaries_and_Places', false);
-        $response->assertSee('flex items-center gap-3', false);
+        $response->assertSee('flex items-center gap-2', false);
         $response->assertSee('event-row', false);
         $response->assertSee('aspect-[4/3]', false);
         $response->assertSee('segmented-compact', false);

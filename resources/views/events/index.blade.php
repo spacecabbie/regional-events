@@ -4,7 +4,7 @@
 
     <x-form-errors />
 
-    <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+    <div class="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
         <nav aria-label="View" class="segmented">
             @foreach (['both' => 'Both', 'list' => 'List', 'map' => 'Map'] as $value => $label)
                 <a
@@ -28,16 +28,16 @@
         <x-event-filters :filters="$filters" :view="$view" :provider="$provider" />
     </div>
 
-    <div class="mt-6 grid gap-6 {{ $view === 'both' ? 'lg:grid-cols-2' : '' }}">
+    <div class="mt-4 grid gap-4 {{ $view === 'both' ? 'lg:grid-cols-2' : '' }}">
         @if ($view !== 'map')
             <section aria-label="Event list" class="{{ $view === 'both' ? 'order-2 lg:order-1' : '' }}">
                 @if ($events->isEmpty())
-                    <p class="card p-4 text-slate-700">{{ $filters->emptyMessage() }}</p>
+                    <p class="card p-3 text-slate-700">{{ $filters->emptyMessage() }}</p>
                 @else
-                    <ul class="grid gap-3">
+                    <ul class="grid gap-2">
                         @foreach ($events as $event)
                             <li class="card event-row overflow-hidden">
-                                <article class="flex items-center gap-3 h-full px-3">
+                                <article class="flex items-center gap-2 h-full px-2">
                                     <div class="min-w-0 flex-1">
                                         <h2 class="text-base font-semibold leading-5 text-slate-900">{{ $event->name }}</h2>
                                         <x-event-when :event="$event" compact />
@@ -57,7 +57,7 @@
         @if ($view !== 'list')
             <section aria-label="Event map" class="{{ $view === 'both' ? 'order-1 lg:order-2' : '' }}">
                 @if ($events->isEmpty())
-                    <p class="card mb-3 p-4 text-slate-700">{{ $filters->emptyMessage() }}</p>
+                    <p class="card mb-2 p-3 text-slate-700">{{ $filters->emptyMessage() }}</p>
                 @endif
                 <div class="card overflow-hidden">
                     <div
@@ -77,7 +77,7 @@
                         data-google-map-id="{{ $googleMapId }}"
                     ></div>
                     @if ($provider === 'open')
-                        <div class="grid gap-2 border-t border-slate-200 px-3 py-2">
+                        <div class="grid gap-1 border-t border-slate-200 px-2 py-1.5">
                             <div class="segmented segmented-compact">
                                 <button type="button" id="map-street" aria-pressed="true">Streets</button>
                                 <button type="button" id="map-satellite" aria-pressed="false">Satellite</button>

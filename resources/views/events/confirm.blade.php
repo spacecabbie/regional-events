@@ -1,7 +1,7 @@
 <x-public-layout title="Confirm event">
     <h1 class="page-title">Confirm event</h1>
-    <div class="card mt-6 max-w-xl space-y-4 p-4 sm:p-6">
-        <p class="text-lg font-semibold">{{ $event->name }}</p>
+    <div class="card mt-4 max-w-xl space-y-3 p-3 sm:p-4">
+        <p class="font-semibold">{{ $event->name }}</p>
         <x-event-when :event="$event" />
 
         @if ($event->status === \App\Events\EventStatus::Confirmed)

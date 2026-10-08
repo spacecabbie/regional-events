@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 
 /**
- * One Lisbon day, the Monday–Sunday week that contains a day, or a full calendar month.
+ * One Lisbon day, the Monday–Sunday week that starts on a chosen Monday, or a full calendar month.
  */
 final class Period implements FiltersEvents
 {
