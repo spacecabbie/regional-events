@@ -11,7 +11,7 @@
                 <li class="flex flex-wrap items-center justify-between gap-3 p-4">
                     <div>
                         <p class="font-semibold">{{ $event->name }}</p>
-                        <p>{{ $event->localStart() }}</p>
+                        <x-event-when :event="$event" />
                         <p class="text-sm text-stone-700">{{ $event->status->value }}</p>
                     </div>
                     <a

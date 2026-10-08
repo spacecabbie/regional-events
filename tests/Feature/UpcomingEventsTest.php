@@ -38,6 +38,22 @@ class UpcomingEventsTest extends TestCase
 
         config(['events.window_days' => 30]);
         $this->assertTrue(Event::query()->upcoming()->whereKey($twoDaysOut->id)->exists());
+
+        Event::factory()->create([
+            'name' => 'Still running',
+            'starts_at' => $start->copy()->subDay(),
+            'ends_at' => $start->copy()->addDay(),
+        ]);
+        Event::factory()->create([
+            'name' => 'Already finished',
+            'starts_at' => $start->copy()->subDays(3),
+            'ends_at' => $start->copy()->subSecond(),
+        ]);
+
+        $overlapping = Event::query()->upcoming()->pluck('name')->all();
+
+        $this->assertContains('Still running', $overlapping);
+        $this->assertNotContains('Already finished', $overlapping);
     }
 
     public function test_the_public_page_hides_pending_events_and_escapes_names(): void
@@ -63,6 +79,7 @@ class UpcomingEventsTest extends TestCase
         $response->assertDontSee('<script>alert(1)</script>', false);
         $response->assertSee('&lt;script&gt;alert(1)&lt;/script&gt;', false);
         $response->assertSee('api=1', false);
+        $response->assertSee('16:00 WEST', false);
         $response->assertSee('data-single-zoom="13"', false);
         $response->assertSee('World_Transportation', false);
         $response->assertSee('World_Boundaries_and_Places', false);

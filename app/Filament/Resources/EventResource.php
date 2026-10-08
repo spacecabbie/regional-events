@@ -19,7 +19,9 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
@@ -42,14 +44,29 @@ class EventResource extends Resource
                 ->required()
                 ->maxLength(200)
                 ->rules(EventRules::name()),
+            Toggle::make('all_day')
+                ->label('All day')
+                ->live()
+                ->helperText('Covers the whole local day. Otherwise enter a 24-hour start and end.'),
             DateTimePicker::make('starts_at')
-                ->label('Starts')
+                ->label(fn (Get $get): string => $get('all_day') ? 'Start date' : 'Starts')
                 ->required()
                 ->seconds(false)
-                ->native(true)
+                ->native(false)
+                ->time(fn (Get $get): bool => ! $get('all_day'))
+                ->displayFormat(fn (Get $get): string => $get('all_day') ? 'j M Y' : 'j M Y, H:i')
                 ->timezone(config('events.timezone'))
-                ->helperText('Portugal time (Europe/Lisbon). Stored in UTC.')
+                ->helperText('Portugal time (Europe/Lisbon), 24-hour. Stored in UTC.')
                 ->rules(EventRules::adminStartsAt()),
+            DateTimePicker::make('ends_at')
+                ->label(fn (Get $get): string => $get('all_day') ? 'End date' : 'Ends')
+                ->required()
+                ->seconds(false)
+                ->native(false)
+                ->time(fn (Get $get): bool => ! $get('all_day'))
+                ->displayFormat(fn (Get $get): string => $get('all_day') ? 'j M Y' : 'j M Y, H:i')
+                ->timezone(config('events.timezone'))
+                ->rules(EventRules::adminEndsAt()),
             TextInput::make('location')
                 ->required()
                 ->maxLength(2000)
@@ -107,6 +124,14 @@ class EventResource extends Resource
                     ->dateTime('j M Y, H:i')
                     ->timezone(config('events.timezone'))
                     ->sortable(),
+                TextColumn::make('ends_at')
+                    ->label('Ends')
+                    ->dateTime('j M Y, H:i')
+                    ->timezone(config('events.timezone')),
+                TextColumn::make('all_day')
+                    ->label('All day')
+                    ->badge()
+                    ->formatStateUsing(fn (bool $state): string => $state ? 'All day' : 'Timed'),
                 TextColumn::make('status')
                     ->badge(),
                 TextColumn::make('email')

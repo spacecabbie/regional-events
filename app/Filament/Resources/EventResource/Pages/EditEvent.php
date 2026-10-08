@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\EventResource\Pages;
 
+use App\Events\EventSchedule;
 use App\Events\StoreFlyer;
 use App\Filament\Resources\EventResource;
 use Filament\Resources\Pages\EditRecord;
@@ -21,6 +22,7 @@ class EditEvent extends EditRecord
     protected function mutateFormDataBeforeSave(array $data): array
     {
         $data = EventResource::applyLocation($data, (string) ($this->data['location'] ?? ''));
+        $data = EventSchedule::applyAdmin($data);
         $storedThumb = $data['flyer_thumb_path'] ?? null;
         $data = EventResource::applyFlyer($data);
 

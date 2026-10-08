@@ -3,11 +3,11 @@
 namespace App\Submissions;
 
 use App\Events\Event;
+use App\Events\EventSchedule;
 use App\Events\EventStatus;
 use App\Events\StoreFlyer;
 use App\Locations\LocationParser;
 use App\Mail\ConfirmEventMail;
-use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -21,10 +21,13 @@ class SubmitEvent
     {
         $coordinate = app(LocationParser::class)->parse((string) $data['location']);
         $stored = $flyer ? app(StoreFlyer::class)->store($flyer) : null;
+        $schedule = EventSchedule::fromForm($data);
 
         $event = Event::query()->create([
             'name' => $data['name'],
-            'starts_at' => Carbon::parse((string) $data['starts_at'], config('events.timezone'))->utc(),
+            'starts_at' => $schedule['starts_at'],
+            'ends_at' => $schedule['ends_at'],
+            'all_day' => $schedule['all_day'],
             'email' => Str::lower((string) $data['email']),
             'status' => EventStatus::Pending,
             'lat' => $coordinate->latitude,

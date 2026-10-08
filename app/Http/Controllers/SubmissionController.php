@@ -28,7 +28,7 @@ class SubmissionController extends Controller
             return redirect()->route('events.create')->with('status', 'Check your email and open the confirmation link. The event stays hidden until you do.');
         }
 
-        $data = $request->validate(EventRules::submission());
+        $data = $request->validate(EventRules::submission(), [], EventRules::attributes());
         $flyer = $request->file('flyer');
 
         $submit($data, $flyer instanceof UploadedFile ? $flyer : null);
@@ -95,7 +95,7 @@ class SubmissionController extends Controller
 
     public function update(Request $request, Event $event, ManageEvent $manage): RedirectResponse
     {
-        $data = $request->validate(EventRules::edit());
+        $data = $request->validate(EventRules::edit(), [], EventRules::attributes());
         $flyer = $request->file('flyer');
         $manage->update($event, $data, $flyer instanceof UploadedFile ? $flyer : null);
 

@@ -13,11 +13,7 @@
             <input id="name" name="name" type="text" required maxlength="200" value="{{ old('name', $event->name) }}" class="mt-1 w-full min-h-12 border border-stone-500 bg-white px-3 text-base focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900">
         </div>
 
-        <div>
-            <label for="starts_at" class="block font-medium">Starts</label>
-            <input id="starts_at" name="starts_at" type="datetime-local" required value="{{ old('starts_at', $event->localStartInput()) }}" class="mt-1 w-full min-h-12 border border-stone-500 bg-white px-3 text-base focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900" aria-describedby="starts-help">
-            <p id="starts-help" class="mt-1 text-sm text-stone-700">Portugal time (Europe/Lisbon).</p>
-        </div>
+        <x-schedule-fields :event="$event" />
 
         <div>
             <label for="location" class="block font-medium">Location</label>
