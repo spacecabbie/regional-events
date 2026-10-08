@@ -4,6 +4,27 @@ if (errors instanceof HTMLElement) {
     errors.focus();
 }
 
+document.querySelectorAll('form').forEach((form) => {
+    const syncSchedule = () => {
+        const allDay = form.querySelector('input[name="schedule"]:checked')?.value === 'all_day';
+        const block = form.querySelector('[data-timed-fields]');
+
+        if (!(block instanceof HTMLElement)) {
+            return;
+        }
+
+        block.hidden = allDay;
+        block.querySelectorAll('input').forEach((input) => {
+            input.disabled = allDay;
+        });
+    };
+
+    if (form.querySelector('[data-timed-fields]')) {
+        form.addEventListener('change', syncSchedule);
+        syncSchedule();
+    }
+});
+
 const map = document.querySelector('#events-map');
 
 if (map instanceof HTMLElement) {

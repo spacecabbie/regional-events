@@ -38,7 +38,9 @@
                                 <article class="flex items-center gap-3">
                                     <div class="min-w-0 flex-1">
                                         <h2 class="text-lg font-semibold">{{ $event->name }}</h2>
-                                        <p class="mt-1">{{ $event->localStart() }}</p>
+                                        <div class="mt-1">
+                                            <x-event-when :event="$event" />
+                                        </div>
                                     </div>
                                     <x-maps-link :event="$event" />
                                     @if ($event->thumbUrl())

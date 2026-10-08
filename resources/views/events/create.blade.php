@@ -14,11 +14,7 @@
             <p id="name-help" class="mt-1 text-sm text-stone-700">Up to 200 characters.</p>
         </div>
 
-        <div>
-            <label for="starts_at" class="block font-medium">Starts</label>
-            <input id="starts_at" name="starts_at" type="datetime-local" required value="{{ old('starts_at') }}" class="mt-1 w-full min-h-12 border border-stone-500 bg-white px-3 text-base focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900" aria-describedby="starts-help">
-            <p id="starts-help" class="mt-1 text-sm text-stone-700">Portugal time (Europe/Lisbon). Today or later.</p>
-        </div>
+        <x-schedule-fields />
 
         <div>
             <label for="location" class="block font-medium">Location</label>
