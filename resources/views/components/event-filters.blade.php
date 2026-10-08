@@ -28,7 +28,7 @@
 
                 <div class="filter-day">
                     <label for="filter-on">Date</label>
-                    <input class="field" type="date" id="filter-on" name="on" value="{{ $filters->onValue() }}">
+                    <input class="field" type="date" id="filter-on" name="on" min="{{ $filters->earliestDay() }}" max="{{ $filters->latestDayValue() }}" value="{{ $filters->onValue() }}">
                     <p class="help">Shows events on this day.</p>
                 </div>
 
@@ -47,16 +47,10 @@
                 <div class="filter-month">
                     <label for="filter-month">Month</label>
                     <select class="field" id="filter-month" name="month">
-                        @foreach (range(1, 12) as $month)
-                            <option value="{{ $month }}" @selected($filters->monthValue() === $month)>
-                                {{ \Illuminate\Support\Carbon::create(2000, $month, 1)->format('F') }}
+                        @foreach ($filters->months() as $month)
+                            <option value="{{ $month['value'] }}" @selected($filters->monthToken() === $month['value'])>
+                                {{ $month['label'] }}
                             </option>
-                        @endforeach
-                    </select>
-                    <label class="mt-2 block" for="filter-year">Year</label>
-                    <select class="field" id="filter-year" name="year">
-                        @foreach ($filters->years() as $year)
-                            <option value="{{ $year }}" @selected($filters->yearValue() === $year)>{{ $year }}</option>
                         @endforeach
                     </select>
                     <p class="help">Shows every day of this month.</p>

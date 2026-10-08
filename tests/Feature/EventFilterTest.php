@@ -39,25 +39,25 @@ class EventFilterTest extends TestCase
 
     public function test_one_day_replaces_the_window_and_keeps_the_view(): void
     {
-        $this->event('Market', '2026-10-01 10:00:00');
-        $this->event('Next day', '2026-10-02 10:00:00');
-        $this->event('Across that day', '2026-09-30 18:00:00', '2026-10-01 12:00:00');
+        $this->event('Market', '2026-11-15 10:00:00');
+        $this->event('Next day', '2026-11-16 10:00:00');
+        $this->event('Across that day', '2026-11-14 18:00:00', '2026-11-15 12:00:00');
         Event::factory()->pending()->create([
             'name' => 'Hidden pending',
-            'starts_at' => $this->utc('2026-10-01 11:00:00'),
+            'starts_at' => $this->utc('2026-11-15 11:00:00'),
         ]);
 
-        $response = $this->get('/?view=map&range=day&on=2026-10-01');
+        $response = $this->get('/?view=map&range=day&on=2026-11-15');
 
         $response->assertOk();
-        $response->assertSee('Events on 1 Oct 2026');
+        $response->assertSee('Events on 15 Nov 2026');
         $response->assertSee('Market');
         $response->assertSee('Across that day');
         $response->assertDontSee('Next day');
         $response->assertDontSee('Hidden pending');
         $response->assertSee('view=list', false);
         $response->assertSee('range=day', false);
-        $response->assertSee('on=2026-10-01', false);
+        $response->assertSee('on=2026-11-15', false);
 
         preg_match("/data-markers='([^']*)'/", $response->getContent(), $markers);
         $decoded = json_decode($markers[1], true, 512, JSON_THROW_ON_ERROR);
@@ -81,18 +81,39 @@ class EventFilterTest extends TestCase
         $response->assertDontSee('Next week market');
     }
 
-    public function test_a_week_can_cross_a_month_and_include_earlier_days(): void
+    public function test_a_future_week_can_cross_a_month(): void
     {
-        $this->event('September Monday', '2026-09-28 09:00:00');
-        $this->event('October Sunday', '2026-10-04 18:00:00');
-        $this->event('Following Monday', '2026-10-05 09:00:00');
+        $this->event('November Monday', '2026-11-30 09:00:00');
+        $this->event('December Sunday', '2026-12-06 18:00:00');
+        $this->event('Following Monday', '2026-12-07 09:00:00');
 
-        $response = $this->get('/?range=week&on=2026-09-28');
+        $response = $this->get('/?range=week&monday=2026-11-30');
 
-        $response->assertSee('Events in the week of 28 Sep–4 Oct 2026');
-        $response->assertSee('September Monday');
-        $response->assertSee('October Sunday');
+        $response->assertSee('Events in the week of 30 Nov–6 Dec 2026');
+        $response->assertSee('November Monday');
+        $response->assertSee('December Sunday');
         $response->assertDontSee('Following Monday');
+    }
+
+    public function test_past_dates_cannot_be_selected(): void
+    {
+        $this->event('Yesterday', '2026-10-07 10:00:00');
+        $this->event('Today', '2026-10-08 10:00:00');
+
+        $page = $this->get('/');
+
+        $page->assertSee('min="2026-10-08"', false);
+        $page->assertSee('Mon 5 Oct 2026');
+        $page->assertDontSee('Mon 28 Sep 2026');
+        $page->assertSee('October 2026');
+        $page->assertDontSee('September 2026');
+        $page->assertSee('January 2027');
+        $page->assertDontSee('January 2026');
+
+        $this->get('/?range=day&on=2026-10-07')->assertSee('Events in the next 30 days');
+        $this->get('/?range=week&monday=2026-09-28')->assertSee('Events in the next 30 days');
+        $this->get('/?range=month&year=2026&month=9')->assertSee('Events in the next 30 days');
+        $this->get('/?range=day&on=2026-10-08')->assertSee('Events on 8 Oct 2026')->assertSee('Today');
     }
 
     public function test_a_full_month_includes_days_outside_the_thirty_day_window(): void
@@ -146,8 +167,8 @@ class EventFilterTest extends TestCase
 
     public function test_an_empty_day_says_so(): void
     {
-        $this->get('/?range=day&on=2026-10-03')
-            ->assertSee('No events on 3 Oct 2026.');
+        $this->get('/?range=day&on=2026-10-09')
+            ->assertSee('No events on 9 Oct 2026.');
     }
 
     private function event(string $name, string $startsAt, ?string $endsAt = null): Event
