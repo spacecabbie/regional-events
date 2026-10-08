@@ -8,26 +8,248 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
+/*
+ * Public controls. The look follows a familiar card-and-button theme
+ * (navbar, rounded fields, primary action) without a second CSS framework.
+ * Blue-800 on white clears WCAG AA; the stock Bootstrap primary blue does not.
+ */
+@layer components {
+    .page-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        line-height: 1.25;
+        color: #0f172a;
+    }
+
+    .lede {
+        margin-top: 0.5rem;
+        max-width: 42rem;
+        color: #475569;
+    }
+
+    .card {
+        border: 1px solid #e2e8f0;
+        border-radius: 0.75rem;
+        background: #fff;
+        box-shadow: 0 1px 2px rgb(15 23 42 / 0.06);
+    }
+
+    .btn {
+        display: inline-flex;
+        min-height: 3rem;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        border-radius: 0.5rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        line-height: 1.25;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .btn:focus-visible {
+        outline: 2px solid #1e40af;
+        outline-offset: 2px;
+    }
+
+    .btn-primary {
+        border: 1px solid #1e3a8a;
+        background: #1e40af;
+        color: #fff;
+    }
+
+    .btn-secondary {
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        color: #0f172a;
+    }
+
+    .btn-danger {
+        border: 1px solid #b91c1c;
+        background: #fff;
+        color: #991b1b;
+    }
+
+    .field {
+        display: block;
+        width: 100%;
+        min-height: 3rem;
+        margin-top: 0.25rem;
+        border: 1px solid #cbd5e1;
+        border-radius: 0.5rem;
+        background: #fff;
+        padding: 0.5rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #0f172a;
+        box-shadow: inset 0 1px 2px rgb(15 23 42 / 0.04);
+    }
+
+    .field:focus-visible {
+        outline: 2px solid #1e40af;
+        outline-offset: 2px;
+    }
+
+    .field-file::file-selector-button {
+        margin-inline-end: 0.75rem;
+        min-height: 2.25rem;
+        border: 0;
+        border-radius: 0.375rem;
+        background: #e2e8f0;
+        padding: 0.25rem 0.75rem;
+        font-weight: 600;
+        color: #0f172a;
+    }
+
+    .help {
+        margin-top: 0.25rem;
+        font-size: 0.875rem;
+        line-height: 1.4;
+        color: #475569;
+    }
+
+    .segmented {
+        display: grid;
+        grid-auto-columns: minmax(0, 1fr);
+        grid-auto-flow: column;
+        gap: 0.25rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.75rem;
+        background: #fff;
+        padding: 0.25rem;
+        box-shadow: 0 1px 2px rgb(15 23 42 / 0.06);
+    }
+
+    .segmented :is(a, button) {
+        display: inline-flex;
+        min-height: 3rem;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.5rem;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 1.25;
+        text-align: center;
+        text-decoration: none;
+        color: #0f172a;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    .segmented :is(a, button):focus-visible {
+        outline: 2px solid #1e40af;
+        outline-offset: 2px;
+    }
+
+    .segmented :is([aria-current='page'], [aria-pressed='true']) {
+        background: #1e40af;
+        color: #fff;
+    }
+
+    .alert {
+        margin-bottom: 1.5rem;
+        border-radius: 0.75rem;
+        padding: 1rem;
+    }
+
+    .alert-error {
+        border: 1px solid #fecaca;
+        background: #fef2f2;
+        color: #7f1d1d;
+    }
+
+    .alert-status {
+        border: 1px solid #a7f3d0;
+        background: #ecfdf5;
+        color: #064e3b;
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        background: #fef3c7;
+        padding: 0 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 2rem;
+        color: #78350f;
+    }
+}
+
+@media (min-width: 40rem) {
+    .page-title {
+        font-size: 1.875rem;
+    }
+}
+
+@media (hover: hover) {
+    .btn-primary:hover {
+        background: #1e3a8a;
+    }
+
+    .btn-secondary:hover {
+        background: #f8fafc;
+    }
+
+    .btn-danger:hover {
+        background: #fef2f2;
+    }
+
+    .segmented :is(a, button):hover {
+        background: #f1f5f9;
+    }
+
+    .segmented :is([aria-current='page'], [aria-pressed='true']):hover {
+        background: #1e3a8a;
+        color: #fff;
+    }
+}
+
 .flyer-dialog {
-    width: auto;
-    max-width: calc(100vw - 2rem);
-    max-height: calc(100dvh - 2rem);
-    padding: 1rem;
-    border: 1px solid #a8a29e;
+    width: fit-content;
+    max-width: calc(100vw - 1.5rem);
+    max-height: calc(100dvh - 1.5rem);
+    margin: auto;
+    padding: 0.75rem;
+    border: 0;
+    border-radius: 0.75rem;
     background: #fff;
+    color: #0f172a;
+    box-shadow: 0 25px 50px -12px rgb(15 23 42 / 0.45);
 }
 
 .flyer-dialog::backdrop {
-    background: rgb(28 25 23 / 0.6);
+    background: rgb(15 23 42 / 0.72);
+}
+
+.flyer-dialog-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.flyer-dialog-title {
+    margin: 0;
+    min-width: 0;
+    font-weight: 600;
+    line-height: 1.3;
 }
 
 .flyer-dialog-image {
     display: block;
     width: auto;
     height: auto;
-    max-width: 100%;
-    max-height: calc(100dvh - 6rem);
+    max-width: min(100%, var(--flyer-width, 794px));
+    max-height: min(calc(100dvh - 6rem), var(--flyer-height, 1123px));
     margin-top: 0.75rem;
     object-fit: contain;
-    background: #f5f5f4;
+    border-radius: 0.5rem;
+    background: #f8fafc;
 }

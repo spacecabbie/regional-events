@@ -25,7 +25,7 @@ The public "Open in Google Maps" link is `https://www.google.com/maps/search/?ap
 
 ## Flyers
 
-JPEG, PNG, GIF, WebP, BMP, TIFF, or PDF. The stored files are lossy WebP, at most 2 MB, without the original camera data. The click view is an ISO 216 A4 page at the CSS reference pixel, 794×1123 (or swapped). A second WebP is kept only when the picture is larger, at most twice that size, and `srcset` offers it to a high-density screen. A smaller upload is not enlarged. A PDF contributes its first page, rendered by Ghostscript. The list thumbnail fits in 160×224 pixels. The thumbnail opens an HTML dialog; without JavaScript the link opens the WebP.
+JPEG, PNG, GIF, WebP, BMP, TIFF, or PDF. The stored files are lossy WebP, at most 2 MB, without the original camera data. The click view is an ISO 216 A4 page at the CSS reference pixel, 794×1123 (or swapped). A second WebP is kept only when the picture is larger, at most twice that size, and `srcset` offers it to a high-density screen. A smaller upload is not enlarged. A PDF contributes its first page, rendered by Ghostscript. The list thumbnail fits in 160×224 pixels. The thumbnail is a button. It fills one page-level HTML dialog and does not leave the page. The same button is used in the map pin. Escape, the Close button, and a click on the dimmed backdrop dismiss it.
 
 ## Run
 

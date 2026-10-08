@@ -142,12 +142,22 @@ class FlyerTest extends TestCase
         $response = $this->get('/');
 
         $response->assertOk();
+        $content = $response->getContent();
         $response->assertSee('data-flyer-open', false);
-        $response->assertSee('id="flyer-'.$event->id.'"', false);
-        $response->assertSee('srcset="', false);
-        $response->assertSee('100dvh', false);
-        $response->assertSee('width="'.$stored->width.'"', false);
-        $response->assertSee('height="'.$stored->height.'"', false);
+        $response->assertSee('id="flyer-overlay"', false);
+        $response->assertSee('closedby="any"', false);
+        $response->assertSee('data-flyer-srcset="', false);
+        $response->assertSee('data-flyer-width="'.$stored->width.'"', false);
+        $response->assertSee('data-flyer-height="'.$stored->height.'"', false);
         $response->assertSee((string) $stored->retinaWidth.'w', false);
+        $this->assertMatchesRegularExpression('/<button\b[^>]*data-flyer-open/', $content);
+        $this->assertDoesNotMatchRegularExpression('/<a\b[^>]*href="[^"]*flyer\.webp"/', $content);
+        $this->assertStringContainsString('100dvh - 6rem', file_get_contents(resource_path('css/app.css')));
+
+        preg_match("/data-markers='([^']*)'/", $content, $markers);
+        $decoded = json_decode($markers[1], true, 512, JSON_THROW_ON_ERROR);
+        $this->assertStringContainsString('<button', $decoded[0]['popup']);
+        $this->assertStringContainsString('data-flyer-open', $decoded[0]['popup']);
+        $this->assertDoesNotMatchRegularExpression('/<a\b[^>]*href="[^"]*flyer\.webp"/', $decoded[0]['popup']);
     }
 }
