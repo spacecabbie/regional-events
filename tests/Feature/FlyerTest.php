@@ -150,7 +150,9 @@ class FlyerTest extends TestCase
         $response->assertSee('data-flyer-width="'.$stored->width.'"', false);
         $response->assertSee('data-flyer-height="'.$stored->height.'"', false);
         $response->assertSee((string) $stored->retinaWidth.'w', false);
+        $response->assertSee('flyer-open', false);
         $this->assertMatchesRegularExpression('/<button\b[^>]*data-flyer-open/', $content);
+        $this->assertStringContainsString('cursor: pointer', file_get_contents(resource_path('css/app.css')));
         $this->assertDoesNotMatchRegularExpression('/<a\b[^>]*href="[^"]*flyer\.webp"/', $content);
         $this->assertStringContainsString('100dvh - 6rem', file_get_contents(resource_path('css/app.css')));
 

@@ -203,6 +203,19 @@
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
     }
+
+    .flyer-open {
+        cursor: pointer;
+        overflow: hidden;
+        border: 1px solid #94a3b8;
+        border-radius: 0.375rem;
+        background: #fff;
+        box-shadow: 0 1px 2px rgb(15 23 42 / 0.08);
+    }
+
+    .flyer-open:active {
+        border-color: #1e3a8a;
+    }
 }
 
 @media (min-width: 40rem) {
@@ -231,6 +244,11 @@
     .segmented :is([aria-current='page'], [aria-pressed='true']):hover {
         background: #1e3a8a;
         color: #fff;
+    }
+
+    .flyer-open:hover {
+        border-color: #1e40af;
+        box-shadow: 0 0 0 2px rgb(30 64 175 / 0.28);
     }
 }
 
