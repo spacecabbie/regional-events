@@ -33,17 +33,20 @@ class EventRules
     /**
      * @return array<int, mixed>
      */
-    public static function endDate(): array
-    {
-        return ['required', 'date_format:Y-m-d', new ConsistentSchedule];
-    }
-
     /**
      * @return array<int, mixed>
      */
     public static function clock(): array
     {
         return ['exclude_if:schedule,all_day', 'required_if:schedule,timed', 'regex:/^(?:[01]\d|2[0-3]):[0-5]\d$/'];
+    }
+
+    /**
+     * @return array<int, mixed>
+     */
+    public static function endClock(): array
+    {
+        return array_merge(self::clock(), [new ConsistentSchedule]);
     }
 
     /**
@@ -103,9 +106,8 @@ class EventRules
             'name' => self::name(),
             'schedule' => self::schedule(),
             'starts_on' => self::startDate(),
-            'ends_on' => self::endDate(),
             'starts_time' => self::clock(),
-            'ends_time' => self::clock(),
+            'ends_time' => self::endClock(),
             'location' => self::location(),
             'email' => self::email(),
             'flyer' => self::flyer(),
@@ -121,9 +123,8 @@ class EventRules
             'name' => self::name(),
             'schedule' => self::schedule(),
             'starts_on' => self::startDate(),
-            'ends_on' => self::endDate(),
             'starts_time' => self::clock(),
-            'ends_time' => self::clock(),
+            'ends_time' => self::endClock(),
             'location' => self::location(),
             'flyer' => self::flyer(),
         ];
@@ -136,8 +137,7 @@ class EventRules
     {
         return [
             'schedule' => 'time',
-            'starts_on' => 'start date',
-            'ends_on' => 'end date',
+            'starts_on' => 'date',
             'starts_time' => 'start time',
             'ends_time' => 'end time',
         ];

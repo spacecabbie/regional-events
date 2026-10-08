@@ -25,6 +25,104 @@ document.querySelectorAll('form').forEach((form) => {
     }
 });
 
+// A pasted picture fills the flyer control. Text pasted into another field
+// is left alone. The file button still works when JavaScript does not.
+const flyerInput = document.querySelector('input[type="file"][name="flyer"]');
+
+if (flyerInput instanceof HTMLInputElement && typeof DataTransfer !== 'undefined') {
+    const status = flyerInput.form?.querySelector('[data-flyer-status]');
+    const preview = flyerInput.form?.querySelector('[data-flyer-preview]');
+    let previewUrl = null;
+    const allowed = new Set(flyerInput.accept.split(',').map((type) => type.trim()).filter(Boolean));
+
+    const showFlyer = (file) => {
+        if (previewUrl !== null) {
+            URL.revokeObjectURL(previewUrl);
+            previewUrl = null;
+        }
+
+        if (status instanceof HTMLElement) {
+            status.hidden = false;
+            status.textContent = file.name;
+        }
+
+        if (!(preview instanceof HTMLImageElement)) {
+            return;
+        }
+
+        if (file.type.startsWith('image/') && file.type !== 'image/svg+xml') {
+            previewUrl = URL.createObjectURL(file);
+            preview.src = previewUrl;
+            preview.hidden = false;
+
+            return;
+        }
+
+        preview.removeAttribute('src');
+        preview.hidden = true;
+    };
+
+    const pastedFile = (data) => {
+        const found = [];
+
+        for (const file of data.files) {
+            found.push(file);
+        }
+
+        for (const item of data.items) {
+            if (item.kind !== 'file') {
+                continue;
+            }
+
+            const file = item.getAsFile();
+
+            if (file) {
+                found.push(file);
+            }
+        }
+
+        return found.find((file) => allowed.has(file.type)) ?? null;
+    };
+
+    flyerInput.addEventListener('change', () => {
+        const file = flyerInput.files?.[0];
+
+        if (file) {
+            showFlyer(file);
+        }
+    });
+
+    document.addEventListener('paste', (event) => {
+        if (!(event instanceof ClipboardEvent) || event.clipboardData === null) {
+            return;
+        }
+
+        const file = pastedFile(event.clipboardData);
+
+        if (file === null) {
+            return;
+        }
+
+        const text = event.clipboardData.getData('text/plain');
+        const target = event.target;
+        const typing = target instanceof HTMLElement
+            && target.closest('input:not([type="file"]), textarea, select, [contenteditable="true"]');
+
+        if (text !== '' && typing) {
+            return;
+        }
+
+        const named = file.name !== ''
+            ? file
+            : new File([file], `pasted.${file.type.split('/')[1] || 'bin'}`, { type: file.type });
+        const transfer = new DataTransfer();
+        transfer.items.add(named);
+        flyerInput.files = transfer.files;
+        event.preventDefault();
+        showFlyer(flyerInput.files[0]);
+    });
+}
+
 function openFlyer(opener) {
     const dialog = document.getElementById('flyer-overlay');
     const image = document.getElementById('flyer-overlay-image');

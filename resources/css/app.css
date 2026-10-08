@@ -94,9 +94,14 @@
         outline-offset: 2px;
     }
 
+    .field-file {
+        padding-block: 0;
+        padding-inline: 0.25rem 0.625rem;
+    }
+
     .field-file::file-selector-button {
-        margin-inline-end: 0.75rem;
-        min-height: 2.25rem;
+        margin-inline-end: 0.5rem;
+        min-height: 2rem;
         border: 0;
         border-radius: 0.375rem;
         background: #e2e8f0;
