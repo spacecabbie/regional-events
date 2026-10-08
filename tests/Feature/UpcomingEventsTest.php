@@ -66,6 +66,9 @@ class UpcomingEventsTest extends TestCase
         $response->assertSee('data-single-zoom="13"', false);
         $response->assertSee('World_Transportation', false);
         $response->assertSee('World_Boundaries_and_Places', false);
+        $response->assertSee('flex items-center gap-3', false);
+        $response->assertSee('in Google Maps', false);
+        $response->assertDontSee('>Open in Google Maps<', false);
         $response->assertDontSee('JSON.parse', false);
 
         preg_match("/data-markers='([^']*)'/", $response->getContent(), $markers);
