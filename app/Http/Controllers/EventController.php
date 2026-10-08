@@ -37,6 +37,8 @@ class EventController extends Controller
             'singleZoom' => (int) config('events.single_pin_zoom'),
             'streetStyle' => config('events.open.style'),
             'satellite' => config('events.open.satellite'),
+            'satelliteRoads' => config('events.open.satellite_roads'),
+            'satellitePlaces' => config('events.open.satellite_places'),
             'satelliteAttribution' => config('events.open.satellite_attribution'),
             'googleKey' => $provider === 'google' ? $maps->googleKey() : null,
             'googleMapId' => $maps->googleMapId(),

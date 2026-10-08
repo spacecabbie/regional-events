@@ -73,6 +73,8 @@
                     data-single-zoom="{{ $singleZoom }}"
                     data-style="{{ $streetStyle }}"
                     data-satellite="{{ $satellite }}"
+                    data-satellite-roads="{{ $satelliteRoads }}"
+                    data-satellite-places="{{ $satellitePlaces }}"
                     data-satellite-attribution="{{ $satelliteAttribution }}"
                     @if ($googleKey) data-google-key="{{ $googleKey }}" @endif
                     data-google-map-id="{{ $googleMapId }}"
@@ -88,7 +90,10 @@
                             · © <a href="https://www.openmaptiles.org/" class="underline">OpenMapTiles</a>
                             · Data from <a href="https://www.openstreetmap.org/copyright" class="underline">OpenStreetMap</a>
                         </span>
-                        <span data-layer="satellite" hidden>{{ $satelliteAttribution }}</span>
+                        <span data-layer="satellite" hidden>
+                            {{ $satelliteAttribution }}
+                            Roads and places © Esri, HERE, Garmin, © <a href="https://www.openstreetmap.org/copyright" class="underline">OpenStreetMap</a> contributors, and the GIS user community.
+                        </span>
                     </p>
                 @endif
                 <noscript>
