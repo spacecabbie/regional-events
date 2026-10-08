@@ -60,26 +60,46 @@ final class PublicQuery
             );
         }
 
+        if ($range === 'week') {
+            $raw = $request->query('monday');
+
+            if (! is_string($raw) || $raw === '') {
+                $raw = $request->query('on');
+            }
+
+            $monday = self::date(is_string($raw) ? $raw : null, $timezone);
+
+            if ($monday === null || ! $monday->isMonday()) {
+                return self::open();
+            }
+
+            $start = $monday->copy()->startOfDay();
+            $end = $start->copy()->addDays(6)->endOfDay()->startOfSecond();
+
+            return new self(
+                'week',
+                $start->format('Y-m-d'),
+                (int) $start->month,
+                (int) $start->year,
+                new Period('week', $start->copy()->utc(), $end->copy()->utc()),
+            );
+        }
+
         $on = self::date($request->query('on'), $timezone);
 
         if ($on === null) {
             return self::open();
         }
 
-        if ($range === 'week') {
-            $start = $on->copy()->startOfWeek(Carbon::MONDAY);
-            $end = $on->copy()->endOfWeek(Carbon::SUNDAY)->endOfDay()->startOfSecond();
-        } else {
-            $start = $on->copy()->startOfDay();
-            $end = $on->copy()->endOfDay()->startOfSecond();
-        }
+        $start = $on->copy()->startOfDay();
+        $end = $on->copy()->endOfDay()->startOfSecond();
 
         return new self(
-            $range,
+            'day',
             $on->format('Y-m-d'),
             (int) $start->month,
             (int) $start->year,
-            new Period($range, $start->copy()->utc(), $end->copy()->utc()),
+            new Period('day', $start->copy()->utc(), $end->copy()->utc()),
         );
     }
 
@@ -185,11 +205,57 @@ final class PublicQuery
 
     public function onValue(): string
     {
-        if ($this->on !== null) {
+        if ($this->range === 'day' && $this->on !== null) {
             return $this->on;
         }
 
         return now()->timezone((string) config('events.timezone'))->format('Y-m-d');
+    }
+
+    public function mondayValue(): string
+    {
+        if ($this->range === 'week' && $this->on !== null) {
+            return $this->on;
+        }
+
+        return now()->timezone((string) config('events.timezone'))->startOfWeek(Carbon::MONDAY)->format('Y-m-d');
+    }
+
+    /**
+     * Mondays from last year through next year, in Europe/Lisbon.
+     *
+     * @return list<string>
+     */
+    public function mondays(): array
+    {
+        $timezone = (string) config('events.timezone');
+        $today = now()->timezone($timezone);
+        $start = Carbon::create($today->year - 1, 1, 1, 0, 0, 0, $timezone)->startOfDay();
+
+        if (! $start->isMonday()) {
+            $start = $start->next(Carbon::MONDAY);
+        }
+
+        $end = Carbon::create($today->year + 1, 12, 31, 0, 0, 0, $timezone)->startOfDay();
+        $dates = [];
+
+        for ($day = $start->copy(); $day->lte($end); $day->addWeek()) {
+            $dates[] = $day->format('Y-m-d');
+        }
+
+        $selected = $this->mondayValue();
+
+        if (! in_array($selected, $dates, true)) {
+            $dates[] = $selected;
+            sort($dates);
+        }
+
+        return $dates;
+    }
+
+    public function mondayLabel(string $date): string
+    {
+        return Carbon::createFromFormat('!Y-m-d', $date, (string) config('events.timezone'))->format('D j M Y');
     }
 
     public function monthValue(): int

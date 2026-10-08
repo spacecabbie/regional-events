@@ -5,12 +5,12 @@
     <x-form-errors />
 
     @if ($event->flyerUrl())
-        <div class="card mt-6 inline-flex max-w-full p-3">
+        <div class="card mt-4 inline-flex max-w-full p-2">
             <x-flyer-thumb :event="$event" image-class="max-h-48 w-auto rounded-md object-contain" />
         </div>
     @endif
 
-    <form action="{{ $updateUrl }}" method="POST" enctype="multipart/form-data" class="card mt-6 max-w-xl space-y-6 p-4 sm:p-6">
+    <form action="{{ $updateUrl }}" method="POST" enctype="multipart/form-data" class="card mt-4 max-w-xl space-y-4 p-3 sm:p-4">
         @csrf
         @method('PUT')
 

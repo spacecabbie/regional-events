@@ -12,19 +12,19 @@
 
 <fieldset>
     <legend class="font-medium">Time</legend>
-    <div class="mt-2 flex flex-wrap gap-4">
-        <label class="inline-flex min-h-12 items-center gap-2">
-            <input type="radio" name="schedule" value="timed" @checked($schedule !== 'all_day') class="size-5 accent-blue-800">
+    <div class="mt-2 flex flex-wrap gap-3">
+        <label class="inline-flex min-h-9 items-center gap-2">
+            <input type="radio" name="schedule" value="timed" @checked($schedule !== 'all_day') class="size-4 accent-blue-800">
             Start and end
         </label>
-        <label class="inline-flex min-h-12 items-center gap-2">
-            <input type="radio" name="schedule" value="all_day" @checked($schedule === 'all_day') class="size-5 accent-blue-800">
+        <label class="inline-flex min-h-9 items-center gap-2">
+            <input type="radio" name="schedule" value="all_day" @checked($schedule === 'all_day') class="size-4 accent-blue-800">
             All day
         </label>
     </div>
 </fieldset>
 
-<div class="grid gap-4 sm:grid-cols-2">
+<div class="grid gap-3 sm:grid-cols-2">
     <div>
         <label for="starts_on" class="block font-medium">Date</label>
         <input id="starts_on" name="starts_on" type="date" required value="{{ $startsOn }}" class="{{ $field }}" aria-describedby="date-help">
@@ -37,7 +37,7 @@
     </div>
 </div>
 
-<div data-timed-fields @if ($schedule === 'all_day') hidden @endif class="grid gap-4 sm:grid-cols-2">
+<div data-timed-fields @if ($schedule === 'all_day') hidden @endif class="grid gap-3 sm:grid-cols-2">
     <div>
         <label for="starts_time" class="block font-medium">Starts</label>
         <input id="starts_time" name="starts_time" type="text" inputmode="numeric" maxlength="5" pattern="([01][0-9]|2[0-3]):[0-5][0-9]" placeholder="14:30" autocomplete="off" spellcheck="false" value="{{ $startsTime }}" @disabled($schedule === 'all_day') class="{{ $field }}" aria-describedby="time-help">

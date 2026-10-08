@@ -26,11 +26,22 @@
                     Month
                 </label>
 
-                <div class="filter-when">
+                <div class="filter-day">
                     <label for="filter-on">Date</label>
                     <input class="field" type="date" id="filter-on" name="on" value="{{ $filters->onValue() }}">
-                    <p class="help filter-day-help">Shows events on this day.</p>
-                    <p class="help filter-week-help">Shows the Monday–Sunday week that contains this day.</p>
+                    <p class="help">Shows events on this day.</p>
+                </div>
+
+                <div class="filter-week">
+                    <label for="filter-monday">Monday</label>
+                    <select class="field" id="filter-monday" name="monday">
+                        @foreach ($filters->mondays() as $monday)
+                            <option value="{{ $monday }}" @selected($filters->mondayValue() === $monday)>
+                                {{ $filters->mondayLabel($monday) }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <p class="help">Shows that Monday through Sunday.</p>
                 </div>
 
                 <div class="filter-month">
@@ -42,7 +53,7 @@
                             </option>
                         @endforeach
                     </select>
-                    <label class="mt-3 block" for="filter-year">Year</label>
+                    <label class="mt-2 block" for="filter-year">Year</label>
                     <select class="field" id="filter-year" name="year">
                         @foreach ($filters->years() as $year)
                             <option value="{{ $year }}" @selected($filters->yearValue() === $year)>{{ $year }}</option>
@@ -51,7 +62,7 @@
                     <p class="help">Shows every day of this month.</p>
                 </div>
             </fieldset>
-            <div class="mt-3 flex flex-wrap gap-2">
+            <div class="mt-2 flex flex-wrap gap-2">
                 <button type="submit" class="btn btn-primary">Show events</button>
                 <a class="btn btn-secondary" href="{{ route('events.index', ['view' => $view, 'provider' => $provider]) }}">All dates</a>
             </div>
