@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\Event;
+use App\Events\Filters\PublicQuery;
 use App\Maps\MapConfig;
 use App\Maps\MarkerList;
 use Illuminate\Http\Request;
@@ -23,15 +23,16 @@ class EventController extends Controller
             $provider = 'open';
         }
 
-        $events = Event::query()->upcoming()->get();
+        $filters = PublicQuery::fromRequest($request);
+        $events = $filters->events();
 
         return view('events.index', [
             'events' => $events,
+            'filters' => $filters,
             'view' => $view,
             'provider' => $provider,
             'googleEnabled' => $maps->googleEnabled(),
             'markers' => $view === 'list' ? [] : $markers->for($events),
-            'days' => (int) config('events.window_days'),
             'center' => config('events.center'),
             'zoom' => (int) config('events.zoom'),
             'singleZoom' => (int) config('events.single_pin_zoom'),

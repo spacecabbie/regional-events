@@ -67,6 +67,34 @@ class Event extends Model
     }
 
     /**
+     * @param  Builder<Event>  $query
+     * @return Builder<Event>
+     */
+    public function scopeConfirmed(Builder $query): Builder
+    {
+        return $query->where('status', EventStatus::Confirmed);
+    }
+
+    /**
+     * Events that overlap [$start, $end]. Both instants are UTC. Callers convert
+     * a Europe/Lisbon day, week, or month before they get here.
+     *
+     * @param  Builder<Event>  $query
+     * @return Builder<Event>
+     */
+    public function scopeOverlapping(Builder $query, Carbon $start, Carbon $end): Builder
+    {
+        return $query
+            ->where('starts_at', '<=', $end)
+            ->where(function (Builder $query) use ($start): void {
+                $query->where('starts_at', '>=', $start)
+                    ->orWhere(function (Builder $query) use ($start): void {
+                        $query->whereNotNull('ends_at')->where('ends_at', '>=', $start);
+                    });
+            });
+    }
+
+    /**
      * Confirmed events that overlap the public window: from the start of today
      * in Europe/Lisbon through the end of the day `window_days` later.
      *
@@ -77,16 +105,7 @@ class Event extends Model
     {
         [$start, $end] = self::window();
 
-        return $query
-            ->where('status', EventStatus::Confirmed)
-            ->where('starts_at', '<=', $end)
-            ->where(function (Builder $query) use ($start): void {
-                $query->where('starts_at', '>=', $start)
-                    ->orWhere(function (Builder $query) use ($start): void {
-                        $query->whereNotNull('ends_at')->where('ends_at', '>=', $start);
-                    });
-            })
-            ->orderBy('starts_at');
+        return $query->confirmed()->overlapping($start, $end)->orderBy('starts_at');
     }
 
     /**
