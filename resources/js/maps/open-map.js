@@ -66,9 +66,11 @@ export function mount(element) {
     const markers = readMarkers(element);
     const center = JSON.parse(element.dataset.center || '{}');
     const zoom = Number(element.dataset.zoom || '13');
-    const singleZoom = Number(element.dataset.singleZoom || '15');
+    const singleZoom = Number(element.dataset.singleZoom || '13');
     const streetStyle = element.dataset.style;
     const satelliteTiles = element.dataset.satellite;
+    const satelliteRoads = element.dataset.satelliteRoads;
+    const satellitePlaces = element.dataset.satellitePlaces;
     const satelliteAttribution = element.dataset.satelliteAttribution || '';
 
     const map = new Map({
@@ -82,14 +84,28 @@ export function mount(element) {
     const satelliteStyle = {
         version: 8,
         sources: {
-            esri: {
+            imagery: {
                 type: 'raster',
                 tiles: [satelliteTiles],
                 tileSize: 256,
                 attribution: satelliteAttribution,
             },
+            roads: {
+                type: 'raster',
+                tiles: [satelliteRoads],
+                tileSize: 256,
+            },
+            places: {
+                type: 'raster',
+                tiles: [satellitePlaces],
+                tileSize: 256,
+            },
         },
-        layers: [{ id: 'esri', type: 'raster', source: 'esri' }],
+        layers: [
+            { id: 'imagery', type: 'raster', source: 'imagery' },
+            { id: 'roads', type: 'raster', source: 'roads' },
+            { id: 'places', type: 'raster', source: 'places' },
+        ],
     };
 
     const pins = [];

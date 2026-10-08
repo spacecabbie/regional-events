@@ -13,7 +13,7 @@ export function mount(element) {
         const markers = readMarkers(element);
         const center = JSON.parse(element.dataset.center || '{}');
         const zoom = Number(element.dataset.zoom || '13');
-        const singleZoom = Number(element.dataset.singleZoom || '15');
+        const singleZoom = Number(element.dataset.singleZoom || '13');
         const { Map, InfoWindow } = await google.maps.importLibrary('maps');
         const { AdvancedMarkerElement } = await google.maps.importLibrary('marker');
 

@@ -19,7 +19,7 @@ return [
 
     'zoom' => 13,
 
-    'single_pin_zoom' => 15,
+    'single_pin_zoom' => 13,
 
     'confirm_hours' => 72,
 
@@ -40,7 +40,9 @@ return [
     'open' => [
         'style' => 'https://tiles.openfreemap.org/styles/liberty',
         'satellite' => 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-        'satellite_attribution' => 'Tiles © Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+        'satellite_roads' => 'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',
+        'satellite_places' => 'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+        'satellite_attribution' => 'Tiles © Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community.',
     ],
 
 ];

@@ -63,6 +63,9 @@ class UpcomingEventsTest extends TestCase
         $response->assertDontSee('<script>alert(1)</script>', false);
         $response->assertSee('&lt;script&gt;alert(1)&lt;/script&gt;', false);
         $response->assertSee('api=1', false);
+        $response->assertSee('data-single-zoom="13"', false);
+        $response->assertSee('World_Transportation', false);
+        $response->assertSee('World_Boundaries_and_Places', false);
         $response->assertDontSee('JSON.parse', false);
 
         preg_match("/data-markers='([^']*)'/", $response->getContent(), $markers);
