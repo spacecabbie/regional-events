@@ -28,7 +28,7 @@
         aria-haspopup="dialog"
         aria-controls="flyer-overlay"
         aria-label="Show flyer for {{ $event->name }}"
-        {{ $attributes->class('inline-flex shrink-0 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-800') }}
+        {{ $attributes->class('flyer-open inline-flex shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-800') }}
     >
         <img
             src="{{ $preview }}"
