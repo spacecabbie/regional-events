@@ -1,42 +1,44 @@
 <x-public-layout title="Edit event">
-    <h1 class="text-2xl font-semibold">Edit event</h1>
-    <p class="mt-2 text-stone-700">Submitted as {{ $event->email }}</p>
+    <h1 class="page-title">Edit event</h1>
+    <p class="lede">Submitted as {{ $event->email }}</p>
 
     <x-form-errors />
 
-    <div class="mt-6">
-        <x-flyer-thumb :event="$event" image-class="max-h-40 w-auto object-contain" />
-    </div>
+    @if ($event->flyerUrl())
+        <div class="card mt-6 inline-flex max-w-full p-3">
+            <x-flyer-thumb :event="$event" image-class="max-h-48 w-auto rounded-md object-contain" />
+        </div>
+    @endif
 
-    <form action="{{ $updateUrl }}" method="POST" enctype="multipart/form-data" class="mt-6 max-w-xl space-y-6">
+    <form action="{{ $updateUrl }}" method="POST" enctype="multipart/form-data" class="card mt-6 max-w-xl space-y-6 p-4 sm:p-6">
         @csrf
         @method('PUT')
 
         <div>
             <label for="name" class="block font-medium">Name</label>
-            <input id="name" name="name" type="text" required maxlength="200" value="{{ old('name', $event->name) }}" class="mt-1 w-full min-h-12 border border-stone-500 bg-white px-3 text-base focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900">
+            <input id="name" name="name" type="text" required maxlength="200" value="{{ old('name', $event->name) }}" class="field">
         </div>
 
         <x-schedule-fields :event="$event" />
 
         <div>
             <label for="location" class="block font-medium">Location</label>
-            <input id="location" name="location" type="text" required maxlength="2000" value="{{ old('location', $event->lat.', '.$event->lng) }}" autocapitalize="off" spellcheck="false" class="mt-1 w-full min-h-12 border border-stone-500 bg-white px-3 text-base focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900" aria-describedby="location-help">
-            <p id="location-help" class="mt-1 text-sm text-stone-700">Coordinates or a new map link.</p>
+            <input id="location" name="location" type="text" required maxlength="2000" value="{{ old('location', $event->lat.', '.$event->lng) }}" autocapitalize="off" spellcheck="false" class="field" aria-describedby="location-help">
+            <p id="location-help" class="help">Coordinates or a new map link.</p>
         </div>
 
         <div>
             <label for="flyer" class="block font-medium">Replace flyer</label>
-            <input id="flyer" name="flyer" type="file" accept="image/jpeg,image/png,image/gif,image/webp,image/bmp,image/tiff,application/pdf" class="mt-1 block w-full min-h-12 text-base file:me-3 file:min-h-12 file:border-0 file:bg-stone-200 file:px-4" aria-describedby="flyer-help">
-            <p id="flyer-help" class="mt-1 text-sm text-stone-700">Leave this empty to keep the current flyer. A new file is stored as WebP. JPEG, PNG, GIF, WebP, BMP, TIFF, or the first page of a PDF.</p>
+            <input id="flyer" name="flyer" type="file" accept="image/jpeg,image/png,image/gif,image/webp,image/bmp,image/tiff,application/pdf" class="field field-file" aria-describedby="flyer-help">
+            <p id="flyer-help" class="help">Leave this empty to keep the current flyer. A new file is stored as WebP. JPEG, PNG, GIF, WebP, BMP, TIFF, or the first page of a PDF.</p>
         </div>
 
-        <button type="submit" class="inline-flex min-h-12 items-center bg-stone-900 px-4 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900">Save changes</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
     </form>
 
-    <form action="{{ $deleteUrl }}" method="POST" class="mt-8">
+    <form action="{{ $deleteUrl }}" method="POST" class="mt-4 max-w-xl">
         @csrf
         @method('DELETE')
-        <button type="submit" class="inline-flex min-h-12 items-center border border-red-800 px-4 text-red-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900">Delete event</button>
+        <button type="submit" class="btn btn-danger">Delete event</button>
     </form>
 </x-public-layout>

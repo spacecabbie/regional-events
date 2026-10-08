@@ -16,8 +16,8 @@ function placeMarkers(map, markers, center, zoom, singleZoom, pins) {
     const bounds = new LngLatBounds();
 
     markers.forEach((marker) => {
-        const popup = new Popup({ offset: 24, maxWidth: '280px' }).setHTML(marker.popup);
-        const pin = new Marker({ color: '#44403c' })
+        const popup = new Popup({ offset: 24, maxWidth: '320px' }).setHTML(marker.popup);
+        const pin = new Marker({ color: '#1e40af' })
             .setLngLat([marker.lng, marker.lat])
             .setPopup(popup)
             .addTo(map);
@@ -43,16 +43,10 @@ function setPressed(active) {
 
     if (street instanceof HTMLButtonElement) {
         street.setAttribute('aria-pressed', active === 'street' ? 'true' : 'false');
-        street.classList.toggle('bg-stone-900', active === 'street');
-        street.classList.toggle('text-white', active === 'street');
-        street.classList.toggle('bg-white', active !== 'street');
     }
 
     if (satellite instanceof HTMLButtonElement) {
         satellite.setAttribute('aria-pressed', active === 'satellite' ? 'true' : 'false');
-        satellite.classList.toggle('bg-stone-900', active === 'satellite');
-        satellite.classList.toggle('text-white', active === 'satellite');
-        satellite.classList.toggle('bg-white', active !== 'satellite');
     }
 
     document.querySelectorAll('#map-attribution [data-layer]').forEach((node) => {
