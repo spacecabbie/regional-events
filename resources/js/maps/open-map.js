@@ -1,5 +1,9 @@
-import { LngLatBounds, Map, Marker, Popup } from 'maplibre-gl';
+import { LngLatBounds, Map, Marker, Popup, setWorkerUrl } from 'maplibre-gl';
+import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import 'maplibre-gl/dist/maplibre-gl.css';
+
+// Vite's bundle changes import.meta.url, so the default worker path 404s.
+setWorkerUrl(workerUrl);
 
 function readMarkers(element) {
     return JSON.parse(element.dataset.markers || '[]');

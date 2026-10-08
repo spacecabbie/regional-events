@@ -67,8 +67,8 @@
                     id="events-map"
                     class="h-80 w-full overflow-hidden rounded-lg border border-stone-400 bg-stone-200 sm:h-96 lg:h-[32rem]"
                     data-provider="{{ $provider }}"
-                    data-markers="{!! \Illuminate\Support\Js::from($markers) !!}"
-                    data-center="{!! \Illuminate\Support\Js::from($center) !!}"
+                    data-markers='@json($markers)'
+                    data-center='@json($center)'
                     data-zoom="{{ $zoom }}"
                     data-single-zoom="{{ $singleZoom }}"
                     data-style="{{ $streetStyle }}"

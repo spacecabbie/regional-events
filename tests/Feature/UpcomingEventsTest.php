@@ -63,6 +63,15 @@ class UpcomingEventsTest extends TestCase
         $response->assertDontSee('<script>alert(1)</script>', false);
         $response->assertSee('&lt;script&gt;alert(1)&lt;/script&gt;', false);
         $response->assertSee('api=1', false);
+        $response->assertDontSee('JSON.parse', false);
+
+        preg_match("/data-markers='([^']*)'/", $response->getContent(), $markers);
+        $decoded = json_decode($markers[1], true, 512, JSON_THROW_ON_ERROR);
+
+        $this->assertCount(1, $decoded);
+        $this->assertEqualsWithDelta(39.822, $decoded[0]['lat'], 0.0000001);
+        $this->assertEqualsWithDelta(-7.491, $decoded[0]['lng'], 0.0000001);
+        $this->assertStringContainsString('&lt;script&gt;alert(1)&lt;/script&gt;', $decoded[0]['popup']);
     }
 
     public function test_google_is_hidden_until_a_key_exists(): void
