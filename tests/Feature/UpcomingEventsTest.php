@@ -84,6 +84,10 @@ class UpcomingEventsTest extends TestCase
         $response->assertSee('World_Transportation', false);
         $response->assertSee('World_Boundaries_and_Places', false);
         $response->assertSee('flex items-center gap-3', false);
+        $response->assertSee('event-row', false);
+        $response->assertSee('aspect-[4/3]', false);
+        $response->assertSee('segmented-compact', false);
+        $this->assertStringContainsString('max-height: 80px', file_get_contents(resource_path('css/app.css')));
         $response->assertSee('in Google Maps', false);
         $response->assertDontSee('>Open in Google Maps<', false);
         $response->assertDontSee('JSON.parse', false);

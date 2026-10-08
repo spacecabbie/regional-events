@@ -34,17 +34,15 @@
                 @else
                     <ul class="grid gap-3">
                         @foreach ($events as $event)
-                            <li class="card p-3 sm:p-4">
-                                <article class="flex items-center gap-3 flex-wrap">
+                            <li class="card event-row overflow-hidden">
+                                <article class="flex items-center gap-3 h-full px-3">
                                     <div class="min-w-0 flex-1">
-                                        <h2 class="text-lg font-semibold text-slate-900">{{ $event->name }}</h2>
-                                        <div class="mt-1 text-sm text-slate-600">
-                                            <x-event-when :event="$event" />
-                                        </div>
+                                        <h2 class="text-base font-semibold leading-5 text-slate-900">{{ $event->name }}</h2>
+                                        <x-event-when :event="$event" compact />
                                     </div>
-                                    <div class="ms-auto flex items-center gap-2">
+                                    <div class="flex shrink-0 items-center gap-2">
                                         <x-maps-link :event="$event" />
-                                        <x-flyer-thumb :event="$event" />
+                                        <x-flyer-thumb :event="$event" image-class="h-16 w-12 shrink-0 rounded-md bg-slate-100 object-contain" />
                                     </div>
                                 </article>
                             </li>
@@ -62,7 +60,7 @@
                 <div class="card overflow-hidden">
                     <div
                         id="events-map"
-                        class="h-80 w-full bg-slate-200 sm:h-96 lg:h-[32rem]"
+                        class="aspect-[4/3] w-full max-h-80 bg-slate-200 lg:max-h-96"
                         data-provider="{{ $provider }}"
                         data-markers='@json($markers)'
                         data-center='@json($center)'
@@ -77,8 +75,8 @@
                         data-google-map-id="{{ $googleMapId }}"
                     ></div>
                     @if ($provider === 'open')
-                        <div class="grid gap-3 border-t border-slate-200 p-3">
-                            <div class="segmented max-w-xs">
+                        <div class="grid gap-2 border-t border-slate-200 px-3 py-2">
+                            <div class="segmented segmented-compact">
                                 <button type="button" id="map-street" aria-pressed="true">Streets</button>
                                 <button type="button" id="map-satellite" aria-pressed="false">Satellite</button>
                             </div>
