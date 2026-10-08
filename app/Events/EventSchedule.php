@@ -8,7 +8,7 @@ use Illuminate\Validation\ValidationException;
 class EventSchedule
 {
     /**
-     * Public form. Dates and times are Europe/Lisbon. Times are 24-hour HH:MM.
+     * Public form. One Europe/Lisbon day. Times are 24-hour HH:MM.
      *
      * @param  array<string, mixed>  $data
      * @return array{starts_at: Carbon, ends_at: Carbon, all_day: bool}
@@ -18,13 +18,12 @@ class EventSchedule
         $timezone = config('events.timezone');
         $allDay = ($data['schedule'] ?? '') === 'all_day';
         $start = Carbon::createFromFormat('!Y-m-d', (string) $data['starts_on'], $timezone)->startOfDay();
-        $endDay = Carbon::createFromFormat('!Y-m-d', (string) $data['ends_on'], $timezone)->startOfDay();
 
         if ($allDay) {
             return [
                 'all_day' => true,
                 'starts_at' => $start->copy()->utc(),
-                'ends_at' => $endDay->copy()->endOfDay()->startOfSecond()->utc(),
+                'ends_at' => $start->copy()->endOfDay()->startOfSecond()->utc(),
             ];
         }
 
@@ -34,7 +33,7 @@ class EventSchedule
         return [
             'all_day' => false,
             'starts_at' => $start->copy()->setTime($startHour, $startMinute)->utc(),
-            'ends_at' => $endDay->copy()->setTime($endHour, $endMinute)->utc(),
+            'ends_at' => $start->copy()->setTime($endHour, $endMinute)->utc(),
         ];
     }
 
@@ -47,7 +46,7 @@ class EventSchedule
             return null;
         }
 
-        if (! self::isDate($data['starts_on'] ?? null) || ! self::isDate($data['ends_on'] ?? null)) {
+        if (! self::isDate($data['starts_on'] ?? null)) {
             return null;
         }
 

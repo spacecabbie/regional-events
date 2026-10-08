@@ -27,7 +27,6 @@ class SubmitEventTest extends TestCase
             'name' => 'Market in Alcains',
             'schedule' => 'timed',
             'starts_on' => '2026-10-09',
-            'ends_on' => '2026-10-09',
             'starts_time' => '21:00',
             'ends_time' => '23:00',
             'location' => '39.902349, -7.4573573',
@@ -91,13 +90,15 @@ class SubmitEventTest extends TestCase
             'name' => 'Changed',
             'schedule' => 'timed',
             'starts_on' => now()->addDay()->format('Y-m-d'),
-            'ends_on' => now()->addDay()->format('Y-m-d'),
             'starts_time' => '10:00',
             'ends_time' => '12:00',
             'location' => '39.822, -7.491',
         ])->assertForbidden();
 
-        $this->get($edit)->assertOk();
+        $this->get($edit)
+            ->assertOk()
+            ->assertDontSee('name="ends_on"', false)
+            ->assertSee('Paste an image', false);
     }
 
     public function test_a_text_file_is_rejected(): void
@@ -108,7 +109,6 @@ class SubmitEventTest extends TestCase
             'name' => 'Bad flyer',
             'schedule' => 'timed',
             'starts_on' => now()->addDay()->format('Y-m-d'),
-            'ends_on' => now()->addDay()->format('Y-m-d'),
             'starts_time' => '10:00',
             'ends_time' => '12:00',
             'location' => '39.822, -7.491',
@@ -129,7 +129,6 @@ class SubmitEventTest extends TestCase
             'name' => 'Town fair',
             'schedule' => 'all_day',
             'starts_on' => '2026-10-11',
-            'ends_on' => '2026-10-11',
             'location' => '39.822, -7.491',
             'email' => 'fair@example.com',
         ])->assertRedirect(route('events.create'));
@@ -157,13 +156,41 @@ class SubmitEventTest extends TestCase
             'name' => 'Backwards',
             'schedule' => 'timed',
             'starts_on' => '2026-10-09',
-            'ends_on' => '2026-10-09',
             'starts_time' => '18:00',
             'ends_time' => '10:00',
             'location' => '39.822, -7.491',
             'email' => 'person@example.com',
-        ])->assertSessionHasErrors('ends_on');
+        ])->assertSessionHasErrors(['ends_time' => 'The end must be after the start.']);
 
         $this->assertSame(0, Event::query()->count());
+    }
+
+    public function test_a_public_event_is_one_day(): void
+    {
+        Mail::fake();
+        Storage::fake('public');
+        $this->travelTo('2026-10-08 15:00:00 Europe/Lisbon');
+
+        $this->get('/events/create')
+            ->assertOk()
+            ->assertSee('name="starts_on"', false)
+            ->assertDontSee('name="ends_on"', false)
+            ->assertSee('Paste an image', false)
+            ->assertSee('min="2026-10-08"', false);
+
+        $this->post('/events', [
+            'name' => 'One day',
+            'schedule' => 'timed',
+            'starts_on' => '2026-10-09',
+            'ends_on' => '2026-10-12',
+            'starts_time' => '10:00',
+            'ends_time' => '12:00',
+            'location' => '39.822, -7.491',
+            'email' => 'one@example.com',
+        ])->assertRedirect(route('events.create'));
+
+        $event = Event::query()->firstOrFail();
+        $this->assertSame('2026-10-09', $event->localStartDate());
+        $this->assertSame('2026-10-09', $event->localEndDate());
     }
 }

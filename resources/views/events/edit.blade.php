@@ -5,12 +5,12 @@
     <x-form-errors />
 
     @if ($event->flyerUrl())
-        <div class="card mt-4 inline-flex max-w-full p-2">
+        <div class="card mt-3 inline-flex max-w-full p-2">
             <x-flyer-thumb :event="$event" image-class="max-h-48 w-auto rounded-md object-contain" />
         </div>
     @endif
 
-    <form action="{{ $updateUrl }}" method="POST" enctype="multipart/form-data" class="card mt-4 max-w-xl space-y-4 p-3 sm:p-4">
+    <form action="{{ $updateUrl }}" method="POST" enctype="multipart/form-data" class="card mt-3 max-w-xl space-y-3 p-3">
         @csrf
         @method('PUT')
 
@@ -30,7 +30,9 @@
         <div>
             <label for="flyer" class="block font-medium">Replace flyer</label>
             <input id="flyer" name="flyer" type="file" accept="image/jpeg,image/png,image/gif,image/webp,image/bmp,image/tiff,application/pdf" class="field field-file" aria-describedby="flyer-help">
-            <p id="flyer-help" class="help">Leave this empty to keep the current flyer. A new file is stored as WebP. JPEG, PNG, GIF, WebP, BMP, TIFF, or the first page of a PDF.</p>
+            <p id="flyer-help" class="help">Paste an image or choose a file to replace it. Leave this empty to keep the current flyer.</p>
+            <p data-flyer-status class="help break-words" role="status" hidden></p>
+            <img data-flyer-preview alt="" hidden class="mt-2 max-h-24 w-auto rounded-md border border-slate-200">
         </div>
 
         <button type="submit" class="btn btn-primary">Save changes</button>

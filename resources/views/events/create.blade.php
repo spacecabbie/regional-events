@@ -4,7 +4,7 @@
 
     <x-form-errors />
 
-    <form action="{{ route('events.store') }}" method="POST" enctype="multipart/form-data" class="card mt-4 max-w-xl space-y-4 p-3 sm:p-4">
+    <form action="{{ route('events.store') }}" method="POST" enctype="multipart/form-data" class="card mt-3 max-w-xl space-y-3 p-3">
         @csrf
         <x-honeypot />
 
@@ -19,13 +19,15 @@
         <div>
             <label for="location" class="block font-medium">Location</label>
             <input id="location" name="location" type="text" required maxlength="2000" value="{{ old('location') }}" autocapitalize="off" spellcheck="false" class="field" aria-describedby="location-help">
-            <p id="location-help" class="help">Paste a Google Maps link, an OpenStreetMap link, a geo: link, or coordinates such as 39.822, -7.491. Place names are not looked up.</p>
+            <p id="location-help" class="help">A map link or coordinates such as 39.822, -7.491. Place names are not looked up.</p>
         </div>
 
         <div>
             <label for="flyer" class="block font-medium">Flyer</label>
             <input id="flyer" name="flyer" type="file" accept="image/jpeg,image/png,image/gif,image/webp,image/bmp,image/tiff,application/pdf" class="field field-file" aria-describedby="flyer-help">
-            <p id="flyer-help" class="help">Optional. JPEG, PNG, GIF, WebP, BMP, TIFF, or PDF. Stored as WebP and fitted inside A4. A smaller picture is left as it is. Only the first PDF page is kept.</p>
+            <p id="flyer-help" class="help">Optional. Paste an image, or choose a JPEG, PNG, GIF, WebP, BMP, TIFF, or PDF. Stored as WebP inside A4.</p>
+            <p data-flyer-status class="help break-words" role="status" hidden></p>
+            <img data-flyer-preview alt="" hidden class="mt-2 max-h-24 w-auto rounded-md border border-slate-200">
         </div>
 
         <div>
