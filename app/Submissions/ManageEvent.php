@@ -27,13 +27,11 @@ class ManageEvent
         $event->lng = $coordinate->longitude;
 
         if ($flyer) {
-            $previousFlyer = $event->flyer_path;
-            $previousThumb = $event->flyer_thumb_path;
+            $previous = array_filter([$event->flyer_path, $event->flyer_2x_path, $event->flyer_thumb_path]);
             $stored = app(StoreFlyer::class)->store($flyer);
-            $event->flyer_path = $stored->path;
-            $event->flyer_thumb_path = $stored->thumb;
+            $event->forceFill($stored->attributes());
             $event->save();
-            app(StoreFlyer::class)->delete($previousFlyer, $previousThumb);
+            app(StoreFlyer::class)->delete(...array_values(array_diff($previous, array_filter([$stored->path, $stored->retina, $stored->thumb]))));
 
             return;
         }

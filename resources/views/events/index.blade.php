@@ -43,15 +43,7 @@
                                         </div>
                                     </div>
                                     <x-maps-link :event="$event" />
-                                    @if ($event->thumbUrl())
-                                        <img
-                                            src="{{ $event->thumbUrl() }}"
-                                            alt="Flyer for {{ $event->name }}"
-                                            class="h-28 w-20 shrink-0 bg-stone-100 object-contain"
-                                            loading="lazy"
-                                            decoding="async"
-                                        >
-                                    @endif
+                                    <x-flyer-thumb :event="$event" />
                                 </article>
                             </li>
                         @endforeach

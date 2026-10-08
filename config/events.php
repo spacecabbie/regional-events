@@ -25,17 +25,37 @@ return [
 
     'edit_hours' => 2,
 
-    // ISO 216 A4 at 150 DPI. Portrait box; landscape swaps the sides.
-    'a4' => [
-        'width' => 1240,
-        'height' => 1754,
+    // ISO 216 A4 at the CSS reference pixel (96 px per inch): 794×1123.
+    // The stored master is flyer_scale times that. Landscape swaps the sides.
+    'a4_css' => [
+        'width' => 794,
+        'height' => 1123,
     ],
+
+    'flyer_scale' => 2,
+
+    'webp_quality' => 75,
 
     'flyer_max_bytes' => 2 * 1024 * 1024,
 
     'upload_max_kilobytes' => 8192,
 
-    'thumb_max' => 400,
+    // 2× the list slot (80×112 CSS pixels).
+    'thumb' => [
+        'width' => 160,
+        'height' => 224,
+    ],
+
+    'flyer_mimes' => [
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'image/webp',
+        'image/bmp',
+        'image/x-ms-bmp',
+        'image/tiff',
+        'application/pdf',
+    ],
 
     'open' => [
         'style' => 'https://tiles.openfreemap.org/styles/liberty',

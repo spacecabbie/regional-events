@@ -91,7 +91,7 @@ class EventRules
      */
     public static function flyer(): array
     {
-        return ['nullable', 'file', 'mimetypes:image/jpeg,image/png,image/webp', 'max:'.config('events.upload_max_kilobytes')];
+        return ['nullable', 'file', 'mimetypes:'.implode(',', config('events.flyer_mimes')), 'max:'.config('events.upload_max_kilobytes')];
     }
 
     /**

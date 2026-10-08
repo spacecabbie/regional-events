@@ -6,6 +6,7 @@ use App\Events\Event;
 use App\Events\EventRules;
 use App\Events\EventStatus;
 use App\Events\FlyerBin;
+use App\Events\FlyerUnreadable;
 use App\Events\StoreFlyer;
 use App\Filament\Resources\EventResource\Pages\CreateEvent;
 use App\Filament\Resources\EventResource\Pages\EditEvent;
@@ -27,6 +28,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Validation\ValidationException;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class EventResource extends Resource
@@ -96,12 +98,18 @@ class EventResource extends Resource
             FileUpload::make('flyer_path')
                 ->label('Flyer')
                 ->disk('public')
-                ->image()
-                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                ->acceptedFileTypes(config('events.flyer_mimes'))
                 ->maxSize((int) config('events.upload_max_kilobytes'))
-                ->helperText('JPEG, PNG, or WebP. Scaled to fit A4. A smaller image is left as it is.')
+                ->helperText('JPEG, PNG, GIF, WebP, BMP, TIFF, or PDF. Stored as WebP and fitted inside A4. A smaller picture is left as it is. Only the first PDF page is kept.')
                 ->saveUploadedFileUsing(function (TemporaryUploadedFile $file): string {
-                    $stored = app(StoreFlyer::class)->store($file);
+                    try {
+                        $stored = app(StoreFlyer::class)->store($file);
+                    } catch (FlyerUnreadable $exception) {
+                        throw ValidationException::withMessages([
+                            'flyer_path' => $exception->getMessage(),
+                        ]);
+                    }
+
                     app(FlyerBin::class)->put($stored);
 
                     return $stored->path;
@@ -186,8 +194,16 @@ class EventResource extends Resource
         $stored = app(FlyerBin::class)->pull();
 
         if ($stored) {
-            $data['flyer_path'] = $stored->path;
-            $data['flyer_thumb_path'] = $stored->thumb;
+            return array_merge($data, $stored->attributes());
+        }
+
+        if (blank($data['flyer_path'] ?? null)) {
+            $data['flyer_path'] = null;
+            $data['flyer_2x_path'] = null;
+            $data['flyer_thumb_path'] = null;
+            $data['flyer_width'] = null;
+            $data['flyer_height'] = null;
+            $data['flyer_2x_width'] = null;
         }
 
         return $data;

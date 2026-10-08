@@ -32,8 +32,14 @@ class SubmitEvent
             'status' => EventStatus::Pending,
             'lat' => $coordinate->latitude,
             'lng' => $coordinate->longitude,
-            'flyer_path' => $stored?->path,
-            'flyer_thumb_path' => $stored?->thumb,
+            ...($stored?->attributes() ?? [
+                'flyer_path' => null,
+                'flyer_2x_path' => null,
+                'flyer_thumb_path' => null,
+                'flyer_width' => null,
+                'flyer_height' => null,
+                'flyer_2x_width' => null,
+            ]),
         ]);
 
         Mail::to($event->email)->send(new ConfirmEventMail($event));
