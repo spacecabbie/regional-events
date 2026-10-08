@@ -32,10 +32,10 @@ final class PublicQuery
         $timezone = (string) config('events.timezone');
 
         if ($range === 'month') {
-            $month = self::monthNumber($request->query('month'));
-            $year = self::yearNumber($request->query('year'));
+            $choice = self::monthChoice($request);
 
-            if ($month !== null && $year !== null) {
+            if ($choice !== null) {
+                [$month, $year] = $choice;
                 $start = Carbon::create($year, $month, 1, 0, 0, 0, $timezone)->startOfDay();
             } else {
                 $on = self::date($request->query('on'), $timezone);
@@ -50,6 +50,10 @@ final class PublicQuery
             }
 
             $end = $start->copy()->endOfMonth()->startOfSecond();
+
+            if ($end->lt(self::today($timezone)) || $start->gt(self::latestMonth($timezone))) {
+                return self::open();
+            }
 
             return new self(
                 'month',
@@ -73,6 +77,17 @@ final class PublicQuery
                 return self::open();
             }
 
+            $earliestMonday = self::today($timezone)->startOfWeek(Carbon::MONDAY);
+            $latestMonday = self::latestDay($timezone)->startOfDay();
+
+            if (! $latestMonday->isMonday()) {
+                $latestMonday = $latestMonday->previous(Carbon::MONDAY);
+            }
+
+            if ($monday->lt($earliestMonday) || $monday->gt($latestMonday)) {
+                return self::open();
+            }
+
             $start = $monday->copy()->startOfDay();
             $end = $start->copy()->addDays(6)->endOfDay()->startOfSecond();
 
@@ -93,6 +108,10 @@ final class PublicQuery
 
         $start = $on->copy()->startOfDay();
         $end = $on->copy()->endOfDay()->startOfSecond();
+
+        if ($start->lt(self::today($timezone)) || $end->gt(self::latestDay($timezone))) {
+            return self::open();
+        }
 
         return new self(
             'day',
@@ -221,33 +240,36 @@ final class PublicQuery
         return now()->timezone((string) config('events.timezone'))->startOfWeek(Carbon::MONDAY)->format('Y-m-d');
     }
 
+    public function earliestDay(): string
+    {
+        return self::today((string) config('events.timezone'))->format('Y-m-d');
+    }
+
+    public function latestDayValue(): string
+    {
+        return self::latestDay((string) config('events.timezone'))->startOfDay()->format('Y-m-d');
+    }
+
     /**
-     * Mondays from last year through next year, in Europe/Lisbon.
+     * Mondays from the current week through next year, in Europe/Lisbon.
+     * The Monday of the current week stays available after Monday has passed.
      *
      * @return list<string>
      */
     public function mondays(): array
     {
         $timezone = (string) config('events.timezone');
-        $today = now()->timezone($timezone);
-        $start = Carbon::create($today->year - 1, 1, 1, 0, 0, 0, $timezone)->startOfDay();
+        $start = self::today($timezone)->startOfWeek(Carbon::MONDAY);
+        $end = self::latestDay($timezone)->startOfDay();
 
-        if (! $start->isMonday()) {
-            $start = $start->next(Carbon::MONDAY);
+        if (! $end->isMonday()) {
+            $end = $end->previous(Carbon::MONDAY);
         }
 
-        $end = Carbon::create($today->year + 1, 12, 31, 0, 0, 0, $timezone)->startOfDay();
         $dates = [];
 
         for ($day = $start->copy(); $day->lte($end); $day->addWeek()) {
             $dates[] = $day->format('Y-m-d');
-        }
-
-        $selected = $this->mondayValue();
-
-        if (! in_array($selected, $dates, true)) {
-            $dates[] = $selected;
-            sort($dates);
         }
 
         return $dates;
@@ -258,30 +280,35 @@ final class PublicQuery
         return Carbon::createFromFormat('!Y-m-d', $date, (string) config('events.timezone'))->format('D j M Y');
     }
 
-    public function monthValue(): int
+    public function monthToken(): string
     {
-        return $this->month ?? (int) now()->timezone((string) config('events.timezone'))->month;
-    }
+        if ($this->range === 'month' && $this->year !== null && $this->month !== null) {
+            return sprintf('%04d-%02d', $this->year, $this->month);
+        }
 
-    public function yearValue(): int
-    {
-        return $this->year ?? (int) now()->timezone((string) config('events.timezone'))->year;
+        return self::today((string) config('events.timezone'))->format('Y-m');
     }
 
     /**
-     * @return list<int>
+     * The current month through December of next year.
+     *
+     * @return list<array{value: string, label: string}>
      */
-    public function years(): array
+    public function months(): array
     {
-        $today = now()->timezone((string) config('events.timezone'));
-        $years = range($today->year - 1, $today->year + 1);
+        $timezone = (string) config('events.timezone');
+        $cursor = self::today($timezone)->startOfMonth();
+        $end = self::latestMonth($timezone);
+        $months = [];
 
-        if (! in_array($this->yearValue(), $years, true)) {
-            $years[] = $this->yearValue();
-            sort($years);
+        for ($month = $cursor->copy(); $month->lte($end); $month->addMonth()) {
+            $months[] = [
+                'value' => $month->format('Y-m'),
+                'label' => $month->format('F Y'),
+            ];
         }
 
-        return $years;
+        return $months;
     }
 
     private static function open(): self
@@ -318,6 +345,52 @@ final class PublicQuery
         }
 
         return $parsed->startOfDay();
+    }
+
+    private static function today(string $timezone): Carbon
+    {
+        return now()->timezone($timezone)->startOfDay();
+    }
+
+    private static function latestDay(string $timezone): Carbon
+    {
+        $today = self::today($timezone);
+
+        return Carbon::create($today->year + 1, 12, 31, 0, 0, 0, $timezone)->endOfDay()->startOfSecond();
+    }
+
+    private static function latestMonth(string $timezone): Carbon
+    {
+        $today = self::today($timezone);
+
+        return Carbon::create($today->year + 1, 12, 1, 0, 0, 0, $timezone)->startOfMonth();
+    }
+
+    /**
+     * @return array{0: int, 1: int}|null
+     */
+    private static function monthChoice(Request $request): ?array
+    {
+        $month = $request->query('month');
+
+        if (is_string($month) && preg_match('/^(\d{4})-(0[1-9]|1[0-2])$/', $month, $matches) === 1) {
+            $year = (int) $matches[1];
+
+            if ($year < 2000 || $year > 2100) {
+                return null;
+            }
+
+            return [(int) $matches[2], $year];
+        }
+
+        $monthNumber = self::monthNumber($month);
+        $yearNumber = self::yearNumber($request->query('year'));
+
+        if ($monthNumber === null || $yearNumber === null) {
+            return null;
+        }
+
+        return [$monthNumber, $yearNumber];
     }
 
     private static function monthNumber(mixed $value): ?int

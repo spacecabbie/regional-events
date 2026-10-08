@@ -8,6 +8,7 @@
     $startsTime = old('starts_time', ($record && ! $record->all_day) ? $record->localStartClock() : null);
     $endsTime = old('ends_time', ($record && ! $record->all_day && $record->ends_at) ? $record->localEndClock() : null);
     $field = 'field';
+    $earliest = now()->timezone(config('events.timezone'))->toDateString();
 @endphp
 
 <fieldset>
@@ -27,12 +28,12 @@
 <div class="grid gap-3 sm:grid-cols-2">
     <div>
         <label for="starts_on" class="block font-medium">Date</label>
-        <input id="starts_on" name="starts_on" type="date" required value="{{ $startsOn }}" class="{{ $field }}" aria-describedby="date-help">
+        <input id="starts_on" name="starts_on" type="date" required min="{{ $earliest }}" value="{{ $startsOn }}" class="{{ $field }}" aria-describedby="date-help">
         <p id="date-help" class="help">Portugal time (Europe/Lisbon). Today or later.</p>
     </div>
     <div>
         <label for="ends_on" class="block font-medium">End date</label>
-        <input id="ends_on" name="ends_on" type="date" required value="{{ $endsOn }}" class="{{ $field }}" aria-describedby="end-date-help">
+        <input id="ends_on" name="ends_on" type="date" required min="{{ $earliest }}" value="{{ $endsOn }}" class="{{ $field }}" aria-describedby="end-date-help">
         <p id="end-date-help" class="help">Use the same date when the event is on one day.</p>
     </div>
 </div>
